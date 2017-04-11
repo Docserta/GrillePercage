@@ -25,7 +25,7 @@ Option Explicit
 '*                   remplacement du tableau Coll_RefExIsol par la classe c_Fasteners
 '*
 '**********************************************************************
-Sub catmain()
+Sub CATMain()
 Dim StatusPartUpdated As Boolean
 Dim instance_catpart_grille_nue As PartDocument
 Dim GrilleActive As New c_PartGrille
@@ -50,11 +50,6 @@ CheminSourcesMacro = Get_Active_CATVBA_Path
     End If
     On Error GoTo 0
     
-'Test le chemin de la bibli des composants
-CheminBibliComposants = CorrigeDFS() & "\" & ComplementCheminBibliComposants
-    
-Set GrilleActive = New c_PartGrille
-
 'test l'existence des Sets géométriques
     On Error GoTo Erreur
     Set TestHBody = GrilleActive.Hb(nHBPtConst)
@@ -68,7 +63,20 @@ Set GrilleActive = New c_PartGrille
     Set TestHBody = Nothing
     Set TestHShape = Nothing
     On Error GoTo 0
+
+'---------------------------
+'Initialisation des variables
+'---------------------------
+    'Defini le chemin de la bibli des composants
+    CheminBibliComposants = CorrigeDFS() & "\" & ComplementCheminBibliComposants
+    'Construction des collections des paramètres de perçage
+    Set CollBagues = New c_DefBagues
+    Set CollBagues = ReadXlsBagues("C:\CFR\Dropbox\Macros\Grilles-Percage" & "\" & NomFicInfoBagues)
+    'CollBagues = ReadXlsBagues(CheminBibliComposants & BaguesSprecif & "\" & NomFicInfoBagues)
+    CollMachines.OpenBibliMachine = CheminBibliComposants & "\" & NomFicInfoMachines
     
+    Set GrilleActive = New c_PartGrille
+
 'Vérifie que le part est Update
     StatusPartUpdated = GrilleActive.PartGrille.IsUpToDate(GrilleActive.PartGrille)
     If StatusPartUpdated = False Then
@@ -77,7 +85,6 @@ Set GrilleActive = New c_PartGrille
     End If
     
 'Chargement de la boite de dialogue
-    CollMachines.OpenBibliMachine = CheminBibliComposants & "\" & NomFicInfoMachines
     Load FRM_DiamPercage
     
     FRM_DiamPercage.Show
@@ -118,7 +125,7 @@ Dim RefBague As String, Ref_Vis As String 'Nom des bague et des vis arretoir
 
 Dim TrouVis As Hole 'stocke le trou de la vis arrétoir pour le passer a la fonction de création de triedre
 
-Dim cPt As Long
+Dim cpt As Long
 Dim j As Long
 Dim Nom_Pt As String
 Dim Nb_Pt_Sel As Long
@@ -147,7 +154,7 @@ Dim NumVisArretoir As String, NumBague As String
 Dim Axe_Trou As HybridShapeLinePtDir 'Axe du trou
 Dim PlanFondLamage As HybridShapePlaneOffset 'Plan du Fon du Lamage
 Dim PointImport As HybridShapeIntersection 'Point d'intersection entre le plan du fond de lamage et une droite
-Dim Barre As New ProgressBarre
+Dim mBar As New c_ProgressBar
 
 'Stockage des infos du formulaire
     'Pour VT et CC
@@ -181,24 +188,24 @@ Dim Barre As New ProgressBarre
  Nb_Pt_Sel = GrilleActive.GrilleSelection.Count
 
 'Progress Barre
-    Set Barre = New ProgressBarre
-    Barre.ProgressTitre 1, " Création des trous, veuillez patienter."
+    Set mBar = New c_ProgressBar
+    mBar.ProgressTitre 1, " Création des trous, veuillez patienter."
         
     Set HBShape_STD = GrilleActive.Hb(nHBStd).HybridShapes
       
-    For cPt = 1 To Nb_Pt_Sel
+    For cpt = 1 To Nb_Pt_Sel
         'Extraction du radical du nom du points A (avant le "-"
-        If InStr(1, Left(Tab_Select_Points(0, cPt - 1), 4), "-", vbTextCompare) = 0 Then
-            PtAName = Tab_Select_Points(0, cPt - 1)
+        If InStr(1, Left(Tab_Select_Points(0, cpt - 1), 4), "-", vbTextCompare) = 0 Then
+            PtAName = Tab_Select_Points(0, cpt - 1)
         Else
-            PtAName = Left(Tab_Select_Points(0, cPt - 1), InStr(1, Left(Tab_Select_Points(0, cPt - 1), 4), "-", vbTextCompare) - 1)
+            PtAName = Left(Tab_Select_Points(0, cpt - 1), InStr(1, Left(Tab_Select_Points(0, cpt - 1), 4), "-", vbTextCompare) - 1)
         End If
-        Barre.ProgressEtape ((100 / Nb_Pt_Sel) * cPt), " Création du trou " & PtAName
+        mBar.ProgressEtape ((100 / Nb_Pt_Sel) * cpt), " Création du trou " & PtAName
         
         'Active le Set Travail
         GrilleActive.PartGrille.InWorkObject = GrilleActive.Hb(nHBTrav)
             
-        Set HBShape_Std_EC = HBShape_STD.Item(Tab_Select_Points(2, cPt - 1))
+        Set HBShape_Std_EC = HBShape_STD.Item(Tab_Select_Points(2, cpt - 1))
             
     'Ajout des paramètres sur le STD en cours
         Set Std_Parameters = GrilleActive.PartGrille.Parameters.SubList(HBShape_Std_EC, True)
@@ -248,7 +255,7 @@ Dim Barre As New ProgressBarre
         GrilleActive.PartGrille.InWorkObject = GrilleActive.PartGrille.MainBody
             
     'Création du trou de nez machine
-        PercageNezMachine GrilleActive, Coord_PtInterSTDSurf30, HBShape_PlanNormal, Type_Trou, Diam_Trou, Diam_Lamage, PtAName, HBShape_Std_EC, Barre
+        PercageNezMachine GrilleActive, Coord_PtInterSTDSurf30, HBShape_PlanNormal, Type_Trou, Diam_Trou, Diam_Lamage, PtAName, HBShape_Std_EC, mBar
     
     'Creation du trou de la vis arretoir, si c'est une machine à double vis arretoir on relance la procédure pour la seconde vis
         If GrilleVT Then
@@ -261,15 +268,15 @@ Dim Barre As New ProgressBarre
                         
                 'Création du triedre d'import de la bague sur le Pt d'intersection entre le fond du lamage et l'axe
                 'Creation_Triedre_SurPt GrilleActive, PointImport, HBShape_Std_EC, "Bague" & PtAName
-                Creation_Triedre_SurPt GrilleActive, PointImport, HBShape_Std_EC, "Bague" & Tab_Select_Points(0, cPt - 1)
+                Creation_Triedre_SurPt GrilleActive, PointImport, HBShape_Std_EC, "Bague" & Tab_Select_Points(0, cpt - 1)
             Else
                 'Création du triedre d'import de la bague sur le Pt TempPtxx
                 'Creation_Triedre_SurPt GrilleActive, Pt_Inter_StdSurf30, HBShape_Std_EC, "Bague" & PtAName
-                Creation_Triedre_SurPt GrilleActive, Pt_Inter_StdSurf30, HBShape_Std_EC, "Bague" & Tab_Select_Points(0, cPt - 1)
+                Creation_Triedre_SurPt GrilleActive, Pt_Inter_StdSurf30, HBShape_Std_EC, "Bague" & Tab_Select_Points(0, cpt - 1)
             End If
 
             'Création du trou de vis
-            Set TrouVis = PercageVisArretoir(GrilleActive, Coord_PtInterSTDSurf30, HBShape_PlanNormal, RayonPerVisArretoir, DiamVisArretoir, ProfVisArretoir, ProfTarauVisArretoir, PtAName, Pt_Inter_StdSurf30, HBShape_Std_EC.Name, Std_Parameters, 1, Barre)
+            Set TrouVis = PercageVisArretoir(GrilleActive, Coord_PtInterSTDSurf30, HBShape_PlanNormal, RayonPerVisArretoir, DiamVisArretoir, ProfVisArretoir, ProfTarauVisArretoir, PtAName, Pt_Inter_StdSurf30, HBShape_Std_EC.Name, Std_Parameters, 1, mBar)
             
             'Creation de l'axe du trou
             Set Axe_Trou = Create_Axe(GrilleActive, TrouVis, HBShape_Std_EC, "AxeVisArretoir1_" & HBShape_Std_EC.Name)
@@ -279,17 +286,17 @@ Dim Barre As New ProgressBarre
                 
                 'Création du triedre d'import de la vis Arretoir sur le Pt d'intersection entre le fond du lamage et l'axe
                 'Creation_Triedre_SurPt GrilleActive, PointImport, HBShape_Std_EC, "VisArretoir1" & PtAName
-                Creation_Triedre_SurPt GrilleActive, PointImport, HBShape_Std_EC, "VisArretoir1" & Tab_Select_Points(0, cPt - 1)
+                Creation_Triedre_SurPt GrilleActive, PointImport, HBShape_Std_EC, "VisArretoir1" & Tab_Select_Points(0, cpt - 1)
             Else
                 'Création du triedre d'import de la Vis Arretoir sur le Pt du sketch du trou
                 'Creation_Triedre_SurTrou GrilleActive, TrouVis, HBShape_Std_EC, "VisArretoir1" & PtAName
-                Creation_Triedre_SurTrou GrilleActive, TrouVis, HBShape_Std_EC, "VisArretoir1" & Tab_Select_Points(0, cPt - 1)
+                Creation_Triedre_SurTrou GrilleActive, TrouVis, HBShape_Std_EC, "VisArretoir1" & Tab_Select_Points(0, cpt - 1)
                 
             End If
             
             If UCase(NBVisArretoir) = "DOUBLE" Then
                 'Création du trou de vis
-                Set TrouVis = PercageVisArretoir(GrilleActive, Coord_PtInterSTDSurf30, HBShape_PlanNormal, RayonPerVisArretoir, DiamVisArretoir, ProfVisArretoir, ProfTarauVisArretoir, PtAName, Pt_Inter_StdSurf30, HBShape_Std_EC.Name, Std_Parameters, 2, Barre)
+                Set TrouVis = PercageVisArretoir(GrilleActive, Coord_PtInterSTDSurf30, HBShape_PlanNormal, RayonPerVisArretoir, DiamVisArretoir, ProfVisArretoir, ProfTarauVisArretoir, PtAName, Pt_Inter_StdSurf30, HBShape_Std_EC.Name, Std_Parameters, 2, mBar)
                 
                 'Creation de l'axe du trou
                  Set Axe_Trou = Create_Axe(GrilleActive, TrouVis, HBShape_Std_EC, "AxeVisArretoir2_" & HBShape_Std_EC.Name)
@@ -299,11 +306,11 @@ Dim Barre As New ProgressBarre
                     
                     'Création du triedre d'import de la vis
                     'Creation_Triedre_SurPt GrilleActive, PointImport, HBShape_Std_EC, "VisArretoir2" & PtAName
-                    Creation_Triedre_SurPt GrilleActive, PointImport, HBShape_Std_EC, "VisArretoir2" & Tab_Select_Points(0, cPt - 1)
+                    Creation_Triedre_SurPt GrilleActive, PointImport, HBShape_Std_EC, "VisArretoir2" & Tab_Select_Points(0, cpt - 1)
                 Else
                     'Création du triedre d'import de la Vis Arretoir sur le Pt du sketch du trou
                     'Creation_Triedre_SurTrou GrilleActive, TrouVis, HBShape_Std_EC, "VisArretoir2" & PtAName
-                    Creation_Triedre_SurTrou GrilleActive, TrouVis, HBShape_Std_EC, "VisArretoir2" & Tab_Select_Points(0, cPt - 1)
+                    Creation_Triedre_SurTrou GrilleActive, TrouVis, HBShape_Std_EC, "VisArretoir2" & Tab_Select_Points(0, cpt - 1)
                 End If
             End If
             
@@ -314,11 +321,11 @@ Dim Barre As New ProgressBarre
     
 'Libération des classes
     Set GrilleActive = Nothing
-    Set Barre = Nothing
+    Set mBar = Nothing
     
 End Sub
 
-Private Sub PercageNezMachine(GrilleActive, Coord_CentreTrou, PlanDeRef, TypeTrou, DTrou, DLamage, NomTrou, AxePercage, Barre)
+Private Sub PercageNezMachine(GrilleActive, Coord_CentreTrou, PlanDeRef, TypeTrou, DTrou, DLamage, NomTrou, AxePercage, mBar)
 'Création du trou du nez machine
 'Coord_CentreTrou tableau des coordonnées du point TempPtAx
 'PlanDeRef plan de perçage TempPlanAx
@@ -328,7 +335,7 @@ Private Sub PercageNezMachine(GrilleActive, Coord_CentreTrou, PlanDeRef, TypeTro
 'NomTrou nom du trou Ax
 'AxePercage STD en cours
 
-Barre.Etape = " Création du trou nez machine pour le point : " & NomTrou
+mBar.Etape = " Création du trou nez machine pour le point : " & NomTrou
 
 Dim Percage As Hole
 Dim LimitePercage As Limit
@@ -422,7 +429,7 @@ Dim Formule_ProfLamageTrouNez As Formula
   
 End Sub
 
-Private Function PercageVisArretoir(GrilleActive, Coord_CentreTrou, PlanDeRef, Diam_Percage, Val_Taraudage, Prof_Trou, Prof_Taraud, NomTrou, PtCentre, Nom_Std, ParametresSTD, NB_Trou, Barre) As Hole
+Private Function PercageVisArretoir(GrilleActive, Coord_CentreTrou, PlanDeRef, Diam_Percage, Val_Taraudage, Prof_Trou, Prof_Taraud, NomTrou, PtCentre, Nom_Std, ParametresSTD, NB_Trou, mBar) As Hole
 'Création du trou de la vis arretoir
 'Coord_CentreTrou tableau des coordonnées du point TempPtAx
 'PlanDeRef plan de perçage TempPlanAx
@@ -436,7 +443,7 @@ Private Function PercageVisArretoir(GrilleActive, Coord_CentreTrou, PlanDeRef, D
 'ParametresSTD Collection des paramètre ajoutés au STD
 'NB_Trou = 1 ou 2 pour les doubles vis arrétoir. une a 35° l'autre a  35° + 180°
 
-Barre.Etape = " Création de la vis arretoir pour le point : " & NomTrou
+mBar.Etape = " Création de la vis arretoir pour le point : " & NomTrou
 
 Dim Ref_TempPtEC As Reference
 Dim Mesure_TempPtEC 'As Measurable

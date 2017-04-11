@@ -966,3 +966,44 @@ Set tCoordPt = New c_Coord
     End With
     Set CoordPt = tCoordPt
 End Function
+
+Public Function ReadXlsBagues(ficXls As String) As c_DefBagues
+'Construit la collection des bagues spécifiques
+Dim oBague As c_DefBague
+Dim oBagues As c_DefBagues
+Dim objexcel
+Dim objWorkBook
+Dim objWorkSheet
+Dim LigEC As Long
+
+    'initialisation des classes
+    Set oBagues = New c_DefBagues
+    Set objexcel = CreateObject("EXCEL.APPLICATION")
+    Set objWorkBook = objexcel.Workbooks.Open(ficXls, True, True)
+    Set objWorkSheet = objWorkBook.Sheets("Catalogue PRS01")
+       LigEC = 2
+    'lecture du fichier excel
+    While objWorkSheet.cells(LigEC, 1) <> ""
+        Set oBague = New c_DefBague
+        oBague.Ref = objWorkSheet.cells(LigEC, 1) ' Reference
+        oBague.DNom = objWorkSheet.cells(LigEC, 2) ' Diam Nominal
+        oBague.Mat = objWorkSheet.cells(LigEC, 3) ' Matière
+        oBague.D1 = objWorkSheet.cells(LigEC, 4) 'D1
+        oBague.D2 = objWorkSheet.cells(LigEC, 5) 'D2
+        oBague.D3 = objWorkSheet.cells(LigEC, 6) 'D3
+        oBague.L1 = objWorkSheet.cells(LigEC, 7) 'L1
+        oBague.L2 = objWorkSheet.cells(LigEC, 8) 'L2
+        oBague.NomFic = objWorkSheet.cells(LigEC, 9) 'Nom du Catpart
+        LigEC = LigEC + 1
+        oBagues.Add oBague.Ref, oBague.DNom, oBague.Mat, oBague.D1, oBague.D2, oBague.D3, oBague.L1, oBague.L2, oBague.NomFic
+        Set oBague = Nothing
+    Wend
+
+    Set ReadXlsBagues = oBagues
+
+'libération des classes
+Set oBague = Nothing
+Set oBagues = Nothing
+Set objexcel = Nothing
+
+End Function

@@ -15,7 +15,7 @@ Option Explicit
 '*
 '*
 '**********************************************************************
-Sub catmain()
+Sub CATMain()
 Dim GrilleNueActive As New c_PartGrille
 Dim GrilleAssActive As New GrilleAss
 Dim GrilleActive As c_PartGrille
@@ -25,7 +25,7 @@ Dim Std_Parameters As Parameters 'Collection des paramètre de la droite STD en c
 Dim Std_ParamEC As Parameter
 Dim std_paramEC_NBVis As Parameter
 Dim i As Long, j As Long
-Dim Barre As ProgressBarre
+Dim mBar As c_ProgressBar
 
 'Log de l'utilisation de la macro
 LogUtilMacro nPath, nFicLog, nMacro, "J_ImportBagues", VMacro
@@ -79,8 +79,8 @@ j = 1
     End If
 
 'affichage de la barre de progression
-    Set Barre = New ProgressBarre
-    Barre.ProgressTitre 1, " Import des composants, veuillez patienter."
+    Set mBar = New c_ProgressBar
+    mBar.ProgressTitre 1, " Import des composants, veuillez patienter."
     
  'Construction du tableau des composants a importer
     For i = 1 To GrilleNueActive.Hb(nHBStd).HybridShapes.Count
@@ -135,7 +135,7 @@ j = 1
     If UBound(TabCompImport, 2) > 0 Then 'La ligne 0 est vide, elle sert a éviter l'erreure ubound sur un tableau vide
         For j = 1 To UBound(TabCompImport, 2)
         'Mise a jour de la barre de progression
-            Barre.ProgressTitre 100 / UBound(TabCompImport, 2) * j, " Import du composant, " & TabCompImport(2, j) & " veuillez patienter."
+            mBar.ProgressTitre 100 / UBound(TabCompImport, 2) * j, " Import du composant, " & TabCompImport(2, j) & " veuillez patienter."
             InstanciationComposant GrilleAssActive, TabCompImport, j
         Next
     End If
@@ -143,7 +143,7 @@ j = 1
 'Libération des classes
     Set GrilleAssActive = Nothing
     Set GrilleActive = Nothing
-    Set Barre = Nothing
+    Set mBar = Nothing
 
     
 End Sub
