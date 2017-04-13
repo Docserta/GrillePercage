@@ -74,7 +74,7 @@ CheminSourcesMacro = Get_Active_CATVBA_Path
     'Construction des collections des paramètres de perçage
     Set CollBagues = New c_DefBagues
     'Set CollBagues = ReadXlsBagues("C:\CFR\Dropbox\Macros\Grilles-Percage" & "\" & NomFicInfoBagues)
-    Set CollBagues = ReadXlsBagues(CheminBibliComposants & BaguesSprecif & "\" & NomFicInfoBagues)
+    Set CollBagues = ReadXlsBagues(CheminBibliComposants & RepBaguesSprecif & "\" & NomFicInfoBagues)
     CollMachines.OpenBibliMachine = CheminBibliComposants & "\" & NomFicInfoMachines
     
     Set GrilleActive = New c_PartGrille
