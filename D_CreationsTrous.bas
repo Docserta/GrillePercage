@@ -23,6 +23,8 @@ Option Explicit
 '*                Ajout de la création des trièdres sur les trous des grilles VT
 '* Modification le : 24/06/16
 '*                   remplacement du tableau Coll_RefExIsol par la classe c_Fasteners
+'* Modification le : 12/04/17
+'*                  Ajout d'une autre bibliotheque de bagues
 '*
 '**********************************************************************
 Sub CATMain()
@@ -50,13 +52,13 @@ CheminSourcesMacro = Get_Active_CATVBA_Path
     End If
     On Error GoTo 0
     
-'test l'existence des Sets géométriques
+    'test l'existence des Sets géométriques
     On Error GoTo Erreur
     Set TestHBody = GrilleActive.Hb(nHBPtConst)
     Set TestHBody = GrilleActive.Hb(nHBStd)
     Set TestHBody = GrilleActive.Hb(nHBTrav)
     Set TestHBody = GrilleActive.Hb(nHBGeoRef)
-'Test l'existance des elements géométriques
+    'Test l'existance des elements géométriques
     Set TestHShape = GrilleActive.OrientationGrille
     Set TestHShape = GrilleActive.HS(nSurfSup, nHBTrav)
     Set TestHShape = GrilleActive.HS(nSurf0, nHBS0)
@@ -71,8 +73,8 @@ CheminSourcesMacro = Get_Active_CATVBA_Path
     CheminBibliComposants = CorrigeDFS() & "\" & ComplementCheminBibliComposants
     'Construction des collections des paramètres de perçage
     Set CollBagues = New c_DefBagues
-    Set CollBagues = ReadXlsBagues("C:\CFR\Dropbox\Macros\Grilles-Percage" & "\" & NomFicInfoBagues)
-    'CollBagues = ReadXlsBagues(CheminBibliComposants & BaguesSprecif & "\" & NomFicInfoBagues)
+    'Set CollBagues = ReadXlsBagues("C:\CFR\Dropbox\Macros\Grilles-Percage" & "\" & NomFicInfoBagues)
+    Set CollBagues = ReadXlsBagues(CheminBibliComposants & BaguesSprecif & "\" & NomFicInfoBagues)
     CollMachines.OpenBibliMachine = CheminBibliComposants & "\" & NomFicInfoMachines
     
     Set GrilleActive = New c_PartGrille
@@ -86,9 +88,7 @@ CheminSourcesMacro = Get_Active_CATVBA_Path
     
 'Chargement de la boite de dialogue
     Load FRM_DiamPercage
-    
     FRM_DiamPercage.Show
-    
     If Not (FRM_DiamPercage.ChB_OkAnnule) Then
         Unload FRM_DiamPercage
         Exit Sub
@@ -144,9 +144,8 @@ Dim Coord_PtInterSTDSurf30(2) As Variant
 
 Dim PtAName As String  ' Nom du point A
 
-Dim GrilleVT As Boolean, TrouLame As Boolean
-    GrilleVT = False
-    TrouLame = False
+Dim GrilleCC As Boolean, GrilleVT As Boolean, GrillePM As Boolean, TrouLame As Boolean
+    GrilleCC = False: GrilleVT = False: GrillePM = False: TrouLame = False
     
 Dim NBVisArretoir  As String
 Dim NumVisArretoir As String, NumBague As String
@@ -157,11 +156,18 @@ Dim PointImport As HybridShapeIntersection 'Point d'intersection entre le plan d
 Dim mBar As New c_ProgressBar
 
 'Stockage des infos du formulaire
-    'Pour VT et CC
+    'Pour VT, CC et PM
     Diam_Trou = ChangeSingle(FRM_DiamPercage.TBX_DiamPercage)
-    NoMachine = FRM_DiamPercage.CBL_NumMachine
-    'Pour VT seulement
-    If FRM_DiamPercage.RB_GrilleVT Then
+    
+    If FRM_DiamPercage.RB_GrilleCC Then 'Pour CC seulement
+        NoMachine = FRM_DiamPercage.CBL_NumMachine
+        GrilleCC = True
+    ElseIf FRM_DiamPercage.RB_GrillePM Then 'Pour PM seulement
+        NoMachine = FRM_DiamPercage.CBL_NumMachine
+        NumBague = FRM_DiamPercage.TBX_NumBague
+        GrillePM = True
+    ElseIf FRM_DiamPercage.RB_GrilleVT Then 'Pour VT seulement
+        NoMachine = FRM_DiamPercage.CBL_NumMachine
         GrilleVT = True
         RayonPerVisArretoir = ChangeSingle(FRM_DiamPercage.TBX_PosArret)
         DiamVisArretoir = FRM_DiamPercage.TBX_DiamArret
@@ -209,9 +215,20 @@ Dim mBar As New c_ProgressBar
             
     'Ajout des paramètres sur le STD en cours
         Set Std_Parameters = GrilleActive.PartGrille.Parameters.SubList(HBShape_Std_EC, True)
-        CreateParamExistString Std_Parameters, "NoMachine", NoMachine
-        CreateParamExistDimension Std_Parameters, "DiamTrouNezMachine", Diam_Trou, "LENGTH"
+        
+        If GrilleCC Then
+            CreateParamExistString Std_Parameters, "NoMachine", NoMachine
+            CreateParamExistString Std_Parameters, "NumBague", NumBague
+            CreateParamExistDimension Std_Parameters, "DiamTrouNezMachine", Diam_Trou, "LENGTH"
+        End If
+        If GrillePM Then
+            CreateParamExistString Std_Parameters, "NumBagueSF", NumBague
+            CreateParamExistString Std_Parameters, "RefBagueSF", NoMachine
+            CreateParamExistDimension Std_Parameters, "DiamTrouNezMachine", Diam_Trou, "LENGTH"
+        End If
         If GrilleVT Then
+            CreateParamExistString Std_Parameters, "NoMachine", NoMachine
+            CreateParamExistDimension Std_Parameters, "DiamTrouNezMachine", Diam_Trou, "LENGTH"
             CreateParamExistDimension Std_Parameters, "RayonPerVisArretoir", RayonPerVisArretoir, "LENGTH"
             'CreateParamExistString Std_Parameters, "RayonPerVisArretoir", RayonPerVisArretoir
             'CreateParamExistDimension Std_Parameters, "DiamVisArretoir", DiamVisArretoir, "LENGTH"
@@ -257,8 +274,8 @@ Dim mBar As New c_ProgressBar
     'Création du trou de nez machine
         PercageNezMachine GrilleActive, Coord_PtInterSTDSurf30, HBShape_PlanNormal, Type_Trou, Diam_Trou, Diam_Lamage, PtAName, HBShape_Std_EC, mBar
     
-    'Creation du trou de la vis arretoir, si c'est une machine à double vis arretoir on relance la procédure pour la seconde vis
-        If GrilleVT Then
+    'Création du triedre d'import de la bague
+        If GrilleVT Or GrillePM Then 'pour les grilles PM et VT
             If Type_Trou = 2 Then 'C'est un trou lamé
                 'Création d'un plan parallèle au plan TempPtAxx de la valeur de la profondeur du lamage
                 Set PlanFondLamage = Create_PlanLamage(GrilleActive, HBShape_PlanNormal, HBShape_Std_EC.Name)
@@ -266,15 +283,18 @@ Dim mBar As New c_ProgressBar
                 'Création du point d'intersection PlanLamage et STD
                 Set PointImport = Creation_Pt_InterPlanLigne(GrilleActive, PlanFondLamage, HBShape_Std_EC, "PtInsertBague_" & HBShape_Std_EC.Name)
                         
-                'Création du triedre d'import de la bague sur le Pt d'intersection entre le fond du lamage et l'axe
+                'Création du triedre sur le Pt d'intersection entre le fond du lamage et l'axe
                 'Creation_Triedre_SurPt GrilleActive, PointImport, HBShape_Std_EC, "Bague" & PtAName
                 Creation_Triedre_SurPt GrilleActive, PointImport, HBShape_Std_EC, "Bague" & Tab_Select_Points(0, cpt - 1)
             Else
-                'Création du triedre d'import de la bague sur le Pt TempPtxx
+                'Création du triedre sur le Pt TempPtxx
                 'Creation_Triedre_SurPt GrilleActive, Pt_Inter_StdSurf30, HBShape_Std_EC, "Bague" & PtAName
                 Creation_Triedre_SurPt GrilleActive, Pt_Inter_StdSurf30, HBShape_Std_EC, "Bague" & Tab_Select_Points(0, cpt - 1)
             End If
-
+        End If
+        
+        'Creation du trou de la vis arretoir, si c'est une machine à double vis arretoir on relance la procédure pour la seconde vis
+        If GrilleVT Then 'pour les grilles VT seules
             'Création du trou de vis
             Set TrouVis = PercageVisArretoir(GrilleActive, Coord_PtInterSTDSurf30, HBShape_PlanNormal, RayonPerVisArretoir, DiamVisArretoir, ProfVisArretoir, ProfTarauVisArretoir, PtAName, Pt_Inter_StdSurf30, HBShape_Std_EC.Name, Std_Parameters, 1, mBar)
             

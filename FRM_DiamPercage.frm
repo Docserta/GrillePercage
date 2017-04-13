@@ -150,8 +150,9 @@ Dim NumMachine As String
             Me.TBX_NumBague = CollMachines.RefBagueVT(NumMachine)
             Me.TBX_NumVis = CollMachines.RefVisArretoirVT(NumMachine)
         ElseIf Me.RB_GrillePM Then
-            Me.TBX_DiamPercage = CollBagues.Item(NumMachine).DNom
+            Me.TBX_DiamPercage = CollBagues.Item(NumMachine).D2
             Me.TBX_DiamLamage = CollBagues.Item(NumMachine).D3
+            Me.TBX_NumBague = CollBagues.Item(NumMachine).NomFic
             
         End If
     End If
@@ -178,36 +179,8 @@ Dim i As Long
         For i = 0 To UBound(NumMachineTemp, 2)
             FRM_DiamPercage.CBL_NumMachine.AddItem (NumMachineTemp(0, i))
         Next
-        'redimentione le cadre
-        Me.Fr_Machine.Height = 102
-        Me.Fr_Machine.Width = 276
-        'Renomme les labels
-        Me.Lbl_NoMachine = "Numéro de Machine"
-        'Masquage des champs Vis Arretoire
-        AffChampsVisArretoir False
-'        Me.TBX_DiamArret.Visible = False
-'        Me.LB_DiamArret.Visible = False
-'        Me.TBX_PosArret.Visible = False
-'        Me.LB_PosArret.Visible = False
-'        Me.TBX_ProfArret.Visible = False
-'        Me.LB_ProfArret.Visible = False
-'        Me.LB_ProfTaraud.Visible = False
-'        Me.TBX_ProfTaraud.Visible = False
-'        Me.LB_NBVis.Visible = False
-'        Me.CBL_NBVis.Visible = False
-        'Choix Lamage
-        AffChampsLamage False
-        EnabledChampsLamage False
-        Me.CB_Lamage.Value = False
-        'Me.CB_Lamage.Visible = False
-        'Me.LB_DiamLamage.Visible = False
-        'Me.TBX_DiamLamage.Visible = False
-        'Ref Vis et bague
-        AffChampsVis False
-'        Me.LB_NumBague.Visible = False
-'        Me.TBX_NumBague.Visible = False
-'        Me.LB_NumVis.Visible = False
-'        Me.TBX_NumVis.Visible = False
+        AffChampsTrouBague "CC"
+
     End If
 End Sub
 
@@ -223,16 +196,7 @@ Dim oBague As c_DefBague
         For Each oBague In CollBagues.Items
             FRM_DiamPercage.CBL_NumMachine.AddItem oBague.Ref
         Next
-        'redimentione le cadre
-        Me.Fr_Machine.Height = 204
-        Me.Fr_Machine.Width = 390
-        'Renomme les labels
-        Me.Lbl_NoMachine = "Numéro de bague"
-        'Affichage des champs
-        AffChampsVisArretoir False
-        AffChampsLamage True
-        EnabledChampsLamage False
-        Me.CB_Lamage.Value = False
+        AffChampsTrouBague "PM"
     
     End If
     
@@ -253,38 +217,8 @@ Dim NumMachineTemp()
         For i = 0 To UBound(NumMachineTemp, 2)
             FRM_DiamPercage.CBL_NumMachine.AddItem (NumMachineTemp(0, i))
         Next
-        'redimentione le cadre
-        Me.Fr_Machine.Height = 204
-        Me.Fr_Machine.Width = 390
-        'Renomme les labels
-        Me.Lbl_NoMachine = "Numéro de Machine"
-        'Affichage des champs Vis Arretoire
-        AffChampsVisArretoir True
-'        Me.TBX_DiamArret.Visible = True
-'        Me.LB_DiamArret.Visible = True
-'        Me.TBX_PosArret.Visible = True
-'        Me.LB_PosArret.Visible = True
-'        Me.TBX_ProfArret.Visible = True
-'        Me.LB_ProfArret.Visible = True
-'        Me.LB_ProfTaraud.Visible = True
-'        Me.TBX_ProfTaraud.Visible = True
-'        Me.CB_Lamage.Visible = True
-'        Me.LB_NBVis.Visible = True
-'        Me.CBL_NBVis.Visible = True
-        'Choix Lamage
-        AffChampsLamage True
-        EnabledChampsLamage False
-        Me.CB_Lamage.Value = False
-        'Me.LB_DiamLamage.enabled = False
-        'Me.LB_DiamLamage.Visible = True
-        'Me.TBX_DiamLamage.enabled = False
-        'Me.TBX_DiamLamage.Visible = True
-        'Ref Vis et bague
-        AffChampsVis True
-'        Me.LB_NumBague.Visible = True
-'        Me.TBX_NumBague.Visible = True
-'        Me.LB_NumVis.Visible = True
-'        Me.TBX_NumVis.Visible = True
+        AffChampsTrouBague "VT"
+
     End If
 End Sub
 
@@ -319,9 +253,65 @@ Me.CBL_NBVis = "SIMPLE"
 Me.TBX_NumBague = ""
 Me.TBX_NumVis = ""
 End Sub
+Private Sub AffChampsTrouBague(Typgrille As String)
+'Masque/affiche ou renomme les controles en fonction dtype de grille
+'Typgrille = "CC" ou "VT" ou "PM"
+    Select Case Typgrille
+        Case "CC"
+            'redimentione le cadre
+            Me.Fr_Machine.Height = 102
+            Me.Fr_Machine.Width = 276
+            'Renomme les labels
+            Me.Lbl_NoMachine = "Numéro de Machine"
+            Me.LB_NumBague = "Numéro de Vis Arretoir"
+            'Affiche les controles
+            Me.LB_NumBague.Visible = False
+            Me.TBX_NumBague.Visible = False
+            Me.LB_DiamTrouAvion.Visible = True
+            Me.TBX_DiamTrouAvion.Visible = True
+            'Masquage des champs Vis Arretoire
+            AffChampsVisArretoir False
+            'Choix Lamage
+            AffChampsLamage False
+            
+        Case "VT"
+            'redimentione le cadre
+            Me.Fr_Machine.Height = 204
+            Me.Fr_Machine.Width = 390
+            'Renomme les labels
+            Me.Lbl_NoMachine = "Numéro de Machine"
+            Me.LB_NumBague = "Numéro de Vis Arretoir"
+            'Affiche les controles
+            Me.LB_NumBague.Visible = True
+            Me.TBX_NumBague.Visible = True
+            Me.LB_DiamTrouAvion.Visible = True
+            Me.TBX_DiamTrouAvion.Visible = True
+            'Affichage des champs Vis Arretoire
+            AffChampsVisArretoir True
+            'Choix Lamage
+            AffChampsLamage True
+            
+        Case "PM"
+            Me.Fr_Machine.Height = 204
+            Me.Fr_Machine.Width = 390
+            'Renomme les labels
+            Me.Lbl_NoMachine = "Numéro de bague"
+            Me.LB_NumBague = "N° JT de la bague"
+            'Affiche les controles
+            Me.LB_NumBague.Visible = True
+            Me.TBX_NumBague.Visible = True
+            Me.LB_DiamTrouAvion.Visible = False
+            Me.TBX_DiamTrouAvion.Visible = False
+            'Affichage des champs
+            AffChampsVisArretoir False
+            'Choix Lamage
+            AffChampsLamage True
+        
+    End Select
+End Sub
 
 Private Sub AffChampsVisArretoir(Visible As Boolean)
-'Masque ou affiche les champs Vis Arretoire
+'Masque ou affiche les controles Vis Arretoire
     Me.TBX_DiamArret.Visible = Visible
     Me.LB_DiamArret.Visible = Visible
     Me.TBX_PosArret.Visible = Visible
@@ -332,25 +322,21 @@ Private Sub AffChampsVisArretoir(Visible As Boolean)
     Me.TBX_ProfTaraud.Visible = Visible
     Me.LB_NBVis.Visible = Visible
     Me.CBL_NBVis.Visible = Visible
-End Sub
-
-Private Sub AffChampsLamage(Visible As Boolean)
-'Affiche ou masque les champs Lamage
-    Me.CB_Lamage.Visible = Visible
-    Me.LB_DiamLamage.Visible = Visible
-    Me.TBX_DiamLamage.Visible = Visible
-End Sub
-
-Private Sub EnabledChampsLamage(Enab As Boolean)
-'Active ou désactive les controles Lamage
-    Me.LB_DiamLamage.enabled = Enab
-    Me.TBX_DiamLamage.enabled = Enab
-End Sub
-
-Private Sub AffChampsVis(Visible As Boolean)
-'Active ou désactive les controles VisArretoir
-    Me.LB_NumBague.Visible = Visible
-    Me.TBX_NumBague.Visible = Visible
     Me.LB_NumVis.Visible = Visible
     Me.TBX_NumVis.Visible = Visible
 End Sub
+
+Private Sub AffChampsLamage(Visible As Boolean)
+'Affiche ou masque les controles Lamage
+    Me.CB_Lamage.Visible = Visible
+    Me.LB_DiamLamage.Visible = Visible
+    Me.TBX_DiamLamage.Visible = Visible
+    'Les controles sont désactivés par défaut
+    Me.CB_Lamage.Value = False
+    Me.LB_DiamLamage.enabled = False
+    Me.TBX_DiamLamage.enabled = False
+End Sub
+
+
+
+
