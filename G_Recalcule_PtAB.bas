@@ -14,7 +14,7 @@ Option Explicit
 '*
 '**********************************************************************
 '
-Sub catmain()
+Sub CATMain()
  
 'Log de l'utilisation de la macro
 LogUtilMacro nPath, nFicLog, nMacro, "G_Recalcule_PtAB", VMacro
@@ -37,7 +37,7 @@ Dim cpt_hs As Long, cpt_RefExt As Long, cpt_HSMax As Long, i As Long
     cpt_RefExt = 0
 Dim Mon_HShapePointCoord As HybridShapePointCoord
 Dim Ligne_Repport As String
-Dim Barre As ProgressBarre
+Dim mBar As c_ProgressBar
 Dim instance_catpart_grille_nue As PartDocument
 Dim tLisfast As c_Fasteners
 'Set tLisfast = New c_Fasteners
@@ -88,8 +88,8 @@ Set tFast = New c_Fastener
     GrilleActive.GrilleSelection.Clear
 
 'Progress Barre
-    Set Barre = New ProgressBarre
-    Barre.ProgressTitre 1, " Recalcul des coordonnées X,Y et Z des faux Pts A et faux Pts B, veuillez patienter."
+    Set mBar = New c_ProgressBar
+    mBar.ProgressTitre 1, " Recalcul des coordonnées X,Y et Z des faux Pts A et faux Pts B, veuillez patienter."
     
 '-----------------------------------------------------
 ' Modification de coordonnées des Faux PtA et Faux PtB
@@ -97,7 +97,7 @@ Set tFast = New c_Fastener
 
     While (cpt_hs <= cpt_HSMax)
         'Maj barre de progression
-        Barre.Progression = (100 / cpt_HSMax) * cpt_hs
+        mBar.Progression = (100 / cpt_HSMax) * cpt_hs
         
         
  ' 1ere, le nom réel
@@ -151,7 +151,7 @@ Set tFast = New c_Fastener
     GrilleActive.PartGrille.Update
     
 ' Renommage des points et lignes
-    C1_Rename_AB.catmain
+    C1_Rename_AB.CATMain
     
     GoTo Fin
 Erreur:
@@ -164,7 +164,7 @@ Erreur:
 Fin:
 'Libération des classes
     Set GrilleActive = Nothing
-    Set Barre = Nothing
+    Set mBar = Nothing
     
 End Sub
 

@@ -13,7 +13,7 @@ Option Explicit
 '* Modification :
 '*
 '**********************************************************************
-Sub catmain()
+Sub CATMain()
 
 'Log de l'utilisation de la macro
 LogUtilMacro nPath, nFicLog, nMacro, "D2_Agrafes", VMacro
@@ -27,11 +27,11 @@ Dim StatusPartUpdated As Boolean
 Dim NoAgrafe As String 'Paramètre qui va porter le Numéro de l'agrafe
 Dim Nb_Pt_Sel As Long
 Dim PtAName As String, PtImportName As String  ' Nom du point A et nom du point "TempPtax"
-Dim cPt As Long
+Dim cpt As Long
 Dim PointImport As HybridShapeIntersection 'Point d'origine du triedre d'import du composant
 Dim GrilleActive As New c_PartGrille
 Dim instance_catpart_grille_nue As PartDocument
-Dim Barre As ProgressBarre
+Dim mBar As c_ProgressBar
 Dim TrouLame As Boolean
 Dim ParamDiaLamage As Dimension
 Dim TestHBody As HybridBody
@@ -89,26 +89,26 @@ Dim TestHShape As HybridShape
     Nb_Pt_Sel = GrilleActive.GrilleSelection.Count
     
 'Progress Barre
-    Set Barre = New ProgressBarre
-    Barre.ProgressTitre 1, " Ajout des attributs d'agrafage sur les STD, veuillez patienter."
+    Set mBar = New c_ProgressBar
+    mBar.ProgressTitre 1, " Ajout des attributs d'agrafage sur les STD, veuillez patienter."
 
     Set HBShape_STD = GrilleActive.Hb(nHBStd).HybridShapes
 
-    For cPt = 1 To Nb_Pt_Sel
+    For cpt = 1 To Nb_Pt_Sel
         'Extraction du radical du nom du points A (avant le "-"
-        If InStr(1, Left(Tab_Select_Points(0, cPt - 1), 4), "-", vbTextCompare) = 0 Then
-            PtAName = Tab_Select_Points(0, cPt - 1)
+        If InStr(1, Left(Tab_Select_Points(0, cpt - 1), 4), "-", vbTextCompare) = 0 Then
+            PtAName = Tab_Select_Points(0, cpt - 1)
         Else
-            PtAName = Left(Tab_Select_Points(0, cPt - 1), InStr(1, Left(Tab_Select_Points(0, cPt - 1), 4), "-", vbTextCompare) - 1)
+            PtAName = Left(Tab_Select_Points(0, cpt - 1), InStr(1, Left(Tab_Select_Points(0, cpt - 1), 4), "-", vbTextCompare) - 1)
         End If
         
-        Barre.ProgressTitre ((100 / Nb_Pt_Sel) * cPt), " Création du trou " & PtAName & ", veuillez patienter."
+        mBar.ProgressTitre ((100 / Nb_Pt_Sel) * cpt), " Création du trou " & PtAName & ", veuillez patienter."
         
         'Active le Set Travail
         GrilleActive.PartGrille.InWorkObject = GrilleActive.Hb(nHBTrav)
         
         'Ajout des paramètres sur le STD en cours
-        Set HBShape_Std_EC = HBShape_STD.Item(Tab_Select_Points(2, cPt - 1))
+        Set HBShape_Std_EC = HBShape_STD.Item(Tab_Select_Points(2, cpt - 1))
         Set Std_Parameters = GrilleActive.PartGrille.Parameters.SubList(HBShape_Std_EC, True)
         CreateParamExistString Std_Parameters, "NoAgrafe", NoAgrafe
         
@@ -149,7 +149,7 @@ Erreur:
     End
 Fin:
      'Libération des classes
-     Set Barre = Nothing
+     Set mBar = Nothing
 
 End Sub
 
