@@ -568,12 +568,12 @@ End Function
 Function Create_Line_PtPt(Pt1, Pt2, ByRef GrilleActive, PtName) As Boolean
 'Crée une ligne entre les pts Pt1 et Pt2
 'Active le set géométrique "std" dans le part actif
-Dim CLPP_hybridShapeLinePtPt As HybridShapeLinePtPt
+Dim mHSLinePtPt As HybridShapeLinePtPt
     GrilleActive.PartGrille.InWorkObject = GrilleActive.Hb(nHBStd)
-    Set CLPP_hybridShapeLinePtPt = GrilleActive.HShapeFactory.AddNewLinePtPtExtended(Pt1, Pt2, 110, 110)
-    GrilleActive.Hb(nHBStd).AppendHybridShape CLPP_hybridShapeLinePtPt
-    CLPP_hybridShapeLinePtPt.Name = PtName
-    GrilleActive.PartGrille.InWorkObject = CLPP_hybridShapeLinePtPt
+    Set mHSLinePtPt = GrilleActive.HShapeFactory.AddNewLinePtPtExtended(Pt1, Pt2, 110, 110)
+    GrilleActive.Hb(nHBStd).AppendHybridShape mHSLinePtPt
+    mHSLinePtPt.Name = PtName
+    GrilleActive.PartGrille.InWorkObject = mHSLinePtPt
     Create_Line_PtPt = True
 End Function
 
@@ -607,15 +607,15 @@ On Error Resume Next
 End Function
 
 Public Function EffaceFicNom(mFolder, FicNom) As Boolean
-'Effacement d'un fichier de excel pré-existant
+'Effacement d'un fichier excel pré-existant
 On Error GoTo Err_EffaceFicNom
-Dim EF_FS, EF_Fold, EF_Files, EF_File
-    Set EF_FS = CreateObject("Scripting.FileSystemObject")
-    Set EF_Fold = EF_FS.GetFolder(mFolder)
-    Set EF_Files = EF_Fold.Files
-    For Each EF_File In EF_Files
-        If EF_File.Name = FicNom Then
-            EF_FS.DeleteFile (CStr(mFolder & "\" & FicNom))
+Dim oFs, mFold, mFiles, mFile
+    Set oFs = CreateObject("Scripting.FileSystemObject")
+    Set mFold = oFs.GetFolder(mFolder)
+    Set mFiles = mFold.Files
+    For Each mFile In mFiles
+        If mFile.Name = FicNom Then
+            oFs.DeleteFile (CStr(mFolder & "\" & FicNom))
         End If
     Next
     EffaceFicNom = True
@@ -965,4 +965,45 @@ Set tCoordPt = New c_Coord
         .Z = Pt(2)
     End With
     Set CoordPt = tCoordPt
+End Function
+
+Public Function ReadXlsBagues(ficXls As String) As c_DefBagues
+'Construit la collection des bagues spécifiques
+Dim oBague As c_DefBague
+Dim oBagues As c_DefBagues
+Dim objexcel
+Dim objWorkBook
+Dim objWorkSheet
+Dim LigEC As Long
+
+    'initialisation des classes
+    Set oBagues = New c_DefBagues
+    Set objexcel = CreateObject("EXCEL.APPLICATION")
+    Set objWorkBook = objexcel.Workbooks.Open(ficXls, True, True)
+    Set objWorkSheet = objWorkBook.Sheets("Catalogue PRS01")
+       LigEC = 2
+    'lecture du fichier excel
+    While objWorkSheet.cells(LigEC, 1) <> ""
+        Set oBague = New c_DefBague
+        oBague.Ref = objWorkSheet.cells(LigEC, 1) ' Reference
+        oBague.DNom = objWorkSheet.cells(LigEC, 2) ' Diam Nominal
+        oBague.Mat = objWorkSheet.cells(LigEC, 3) ' Matière
+        oBague.D1 = CDbl(objWorkSheet.cells(LigEC, 4)) 'D1
+        oBague.D2 = CDbl(objWorkSheet.cells(LigEC, 5)) 'D2
+        oBague.D3 = CDbl(objWorkSheet.cells(LigEC, 7)) 'D3
+        oBague.L1 = CDbl(objWorkSheet.cells(LigEC, 8)) 'L1
+        oBague.L2 = CDbl(objWorkSheet.cells(LigEC, 9)) 'L2
+        oBague.NomFic = objWorkSheet.cells(LigEC, 11) 'Nom du Catpart
+        LigEC = LigEC + 1
+        oBagues.Add oBague.Ref, oBague.DNom, oBague.Mat, oBague.D1, oBague.D2, oBague.D3, oBague.L1, oBague.L2, oBague.NomFic
+        Set oBague = Nothing
+    Wend
+
+    Set ReadXlsBagues = oBagues
+
+'libération des classes
+Set oBague = Nothing
+Set oBagues = Nothing
+Set objexcel = Nothing
+
 End Function
