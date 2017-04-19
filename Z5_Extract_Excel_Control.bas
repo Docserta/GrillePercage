@@ -1,7 +1,7 @@
 Attribute VB_Name = "Z5_Extract_Excel_Control"
 Option Explicit
 
-Sub catmain()
+Sub CATMain()
 ' *****************************************************************
 ' * Génère le rapport de controle au format excel
 ' * utilise le template situé dans le répertoire de la macro.
@@ -33,7 +33,7 @@ Dim OrigPts As String
 Dim AxeSym As String
 Dim PartGrilleD As New c_PartGrille
 Dim PartGrilleG As New c_PartGrille
-Dim Barre As ProgressBarre
+Dim mBar As c_ProgressBar
 Dim NomRapportControl As String, NomRapportControlSym As String
 Dim PartDloaded As Boolean, PartGLoaded As Boolean
 Dim TableauPoints
@@ -70,7 +70,7 @@ Dim TableauPoints
     End If
     
     'Progress Barre
-    Set Barre = New ProgressBarre
+    Set mBar = New c_ProgressBar
     'Initialisation du fractionnement de la barre de progression
     ' Points A et B, Pinules et pieds, angles et diametres valent 1 = 6
     ' Remontage Airbus  valent 3 * 2 = 6
@@ -81,8 +81,8 @@ Dim TableauPoints
         nbEtapes = 13 'Un fichier excel a traiter
     End If
     
-    noEtape = 1: noItem = 1: nbItems = 100: strTitre = " Création de l'export excel, veuillez patienter."
-    Barre.CalculProgression noEtape, nbEtapes, noItem, nbItems, strTitre
+    noEtape = 1: noItem = 1: nbItems = 100: StrTitre = " Création de l'export excel, veuillez patienter."
+    mBar.CalculProgression noEtape, nbEtapes, noItem, nbItems, StrTitre
      
     NoGrilleD = Frm_Extract.TBX_NomGriNueD
     NoGrilleG = Frm_Extract.TBX_NomGriNueG
@@ -277,7 +277,7 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleD.partDocGrille, nHBPtA)
             End If
-            ExportPt TableauPoints, objWorkSheet, nHBPtA, "N", Barre
+            ExportPt TableauPoints, objWorkSheet, nHBPtA, "N", mBar
         Else
             MsgBox "Le set Géométrique : " & (nHBPtA) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
             End
@@ -291,7 +291,7 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleD.partDocGrille, nHBPtB)
             End If
-            ExportPt TableauPoints, objWorkSheet, nHBPtB, "N", Barre
+            ExportPt TableauPoints, objWorkSheet, nHBPtB, "N", mBar
         Else
             MsgBox "Le set Géométrique : " & (nHBPtA) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
             End
@@ -305,7 +305,7 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleD.partDocGrille, nHBFeet)
             End If
-            ExportPt TableauPoints, objWorkSheet, nHBFeet, "N", Barre
+            ExportPt TableauPoints, objWorkSheet, nHBFeet, "N", mBar
         End If
     'export des pinnules
         noEtape = noEtape + 1
@@ -316,16 +316,16 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleD.partDocGrille, nHBPin)
             End If
-            ExportPt TableauPoints, objWorkSheet, nHBPin, "N", Barre
+            ExportPt TableauPoints, objWorkSheet, nHBPin, "N", mBar
         End If
     'Export des angles
         noEtape = noEtape + 1
         Set objWorkSheet = objWorkBookControle.worksheets("cote droit angle")
-        ExportAngle PartGrilleD.Hb(nHBPtA), objWorkSheet, "D", Barre
+        ExportAngle PartGrilleD.Hb(nHBPtA), objWorkSheet, "D", mBar
     'Export des Diamètres
         noEtape = noEtape + 1
         Set objWorkSheet = objWorkBookControle.worksheets("diamètre droit")
-        ExportDiam PartGrilleD.Hb(nHBPtA), objWorkSheet, Barre
+        ExportDiam PartGrilleD.Hb(nHBPtA), objWorkSheet, mBar
     End If
     If CoteGrille = "DS" Then
     'export des points A Sym
@@ -337,7 +337,7 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleD.partDocGrille, nHBPtA)
             End If
-            ExportPt TableauPoints, objWorkSheetSym, nHBPtA, AxeSym, Barre
+            ExportPt TableauPoints, objWorkSheetSym, nHBPtA, AxeSym, mBar
         Else
             MsgBox "Le set Géométrique : " & (nHBPtA) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
             End
@@ -351,7 +351,7 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleD.partDocGrille, nHBPtB)
             End If
-            ExportPt TableauPoints, objWorkSheetSym, nHBPtB, AxeSym, Barre
+            ExportPt TableauPoints, objWorkSheetSym, nHBPtB, AxeSym, mBar
         Else
             MsgBox "Le set Géométrique : " & (nHBPtB) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
             End
@@ -365,7 +365,7 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleD.partDocGrille, nHBFeet)
             End If
-            ExportPt TableauPoints, objWorkSheetSym, nHBFeet, AxeSym, Barre
+            ExportPt TableauPoints, objWorkSheetSym, nHBFeet, AxeSym, mBar
         End If
     'export des pinnules Sym
         noEtape = noEtape + 1
@@ -377,16 +377,16 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleD.partDocGrille, nHBPin)
             End If
-            ExportPt TableauPoints, objWorkSheetSym, nHBPin, AxeSym, Barre
+            ExportPt TableauPoints, objWorkSheetSym, nHBPin, AxeSym, mBar
         End If
     'Export des angles Sym
         noEtape = noEtape + 1
         Set objWorkSheetSym = objWorkBookControleSym.worksheets("cote gauche angle")
-        ExportAngle PartGrilleD.Hb(nHBPtA), objWorkSheetSym, "G", Barre
+        ExportAngle PartGrilleD.Hb(nHBPtA), objWorkSheetSym, "G", mBar
     'Export des Diamètres
         noEtape = noEtape + 1
         Set objWorkSheetSym = objWorkBookControleSym.worksheets("diamètre gauche")
-        ExportDiam PartGrilleD.Hb(nHBPtA), objWorkSheetSym, Barre
+        ExportDiam PartGrilleD.Hb(nHBPtA), objWorkSheetSym, mBar
     End If
 
 'Coté Droit Livraison Airbus
@@ -397,7 +397,7 @@ Set coll_docs = CATIA.Documents
         objWorkSheet.range("C12") = NumOutillageGrilleD
         objWorkSheet.range("C13") = "A" 'Indice
         objWorkSheet.range("F12") = Exemplaire
-        RemontageAirbus objWorkBookControle, 223, "D", Barre
+        RemontageAirbus objWorkBookControle, 223, "D", mBar
     End If
     If CoteGrille = "DS" Then
     'N° et Nom de grille Coté Sym
@@ -406,7 +406,7 @@ Set coll_docs = CATIA.Documents
         objWorkSheetSym.range("C12") = NumOutillageGrilleG
         objWorkSheet.range("C13") = "A" 'Indice
         objWorkSheet.range("F12") = Exemplaire
-        RemontageAirbus objWorkBookControleSym, 223, "G", Barre
+        RemontageAirbus objWorkBookControleSym, 223, "G", mBar
     End If
 '======================================================================================
 
@@ -421,7 +421,7 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleG.partDocGrille, nHBPtA)
             End If
-            ExportPt TableauPoints, objWorkSheet, nHBPtA, "N", Barre
+            ExportPt TableauPoints, objWorkSheet, nHBPtA, "N", mBar
         Else
             MsgBox "Le set Géométrique : " & (nHBPtA) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
             End
@@ -435,7 +435,7 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleG.partDocGrille, nHBPtB)
             End If
-            ExportPt TableauPoints, objWorkSheet, nHBPtB, "N", Barre
+            ExportPt TableauPoints, objWorkSheet, nHBPtB, "N", mBar
         Else
             MsgBox "Le set Géométrique : " & (nHBPtB) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
             End
@@ -450,7 +450,7 @@ Set coll_docs = CATIA.Documents
                 TableauPoints = RecupListPtCoord(PartGrilleG.partDocGrille, nHBFeet)
             End If
             
-            ExportPt TableauPoints, objWorkSheet, nHBFeet, "N", Barre
+            ExportPt TableauPoints, objWorkSheet, nHBFeet, "N", mBar
         End If
     'export des pinnules
         noEtape = noEtape + 1
@@ -461,16 +461,16 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleG.partDocGrille, nHBPin)
             End If
-            ExportPt TableauPoints, objWorkSheet, nHBPin, "N", Barre
+            ExportPt TableauPoints, objWorkSheet, nHBPin, "N", mBar
         End If
     'Export des angles
         noEtape = noEtape + 1
         Set objWorkSheet = objWorkBookControle.worksheets("cote gauche angle")
-        ExportAngle PartGrilleG.Hb(nHBPtA), objWorkSheet, "G", Barre
+        ExportAngle PartGrilleG.Hb(nHBPtA), objWorkSheet, "G", mBar
     'Export des Diamètres
         noEtape = noEtape + 1
         Set objWorkSheet = objWorkBookControle.worksheets("diamètre gauche")
-        ExportDiam PartGrilleG.Hb(nHBPtA), objWorkSheet, Barre
+        ExportDiam PartGrilleG.Hb(nHBPtA), objWorkSheet, mBar
     End If
      If CoteGrille = "GS" Then
     'export des points A Sym
@@ -482,7 +482,7 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleG.partDocGrille, nHBPtA)
             End If
-            ExportPt TableauPoints, objWorkSheetSym, nHBPtA, AxeSym, Barre
+            ExportPt TableauPoints, objWorkSheetSym, nHBPtA, AxeSym, mBar
         Else
             MsgBox "Le set Géométrique : " & (nHBPtA) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
             End
@@ -496,7 +496,7 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleG.partDocGrille, nHBPtB)
             End If
-            ExportPt TableauPoints, objWorkSheetSym, nHBPtB, AxeSym, Barre
+            ExportPt TableauPoints, objWorkSheetSym, nHBPtB, AxeSym, mBar
         Else
             MsgBox "Le set Géométrique : " & (nHBPtB) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
             End
@@ -510,7 +510,7 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleG.partDocGrille, nHBFeet)
             End If
-            ExportPt TableauPoints, objWorkSheetSym, nHBFeet, AxeSym, Barre
+            ExportPt TableauPoints, objWorkSheetSym, nHBFeet, AxeSym, mBar
         End If
     'export des pinnules
         noEtape = noEtape + 1
@@ -521,16 +521,16 @@ Set coll_docs = CATIA.Documents
             Else
                 TableauPoints = RecupListPtCoord(PartGrilleG.partDocGrille, nHBPin)
             End If
-            ExportPt TableauPoints, objWorkSheetSym, nHBPin, AxeSym, Barre
+            ExportPt TableauPoints, objWorkSheetSym, nHBPin, AxeSym, mBar
         End If
     'Export des angles Sym
         noEtape = noEtape + 1
         Set objWorkSheetSym = objWorkBookControleSym.worksheets("cote droit angle")
-        ExportAngle PartGrilleG.Hb(nHBPtA), objWorkSheetSym, "D", Barre
+        ExportAngle PartGrilleG.Hb(nHBPtA), objWorkSheetSym, "D", mBar
     'Export des Diamètres
         noEtape = noEtape + 1
         Set objWorkSheetSym = objWorkBookControleSym.worksheets("diamètre droit")
-        ExportDiam PartGrilleG.Hb(nHBPtA), objWorkSheetSym, Barre
+        ExportDiam PartGrilleG.Hb(nHBPtA), objWorkSheetSym, mBar
     End If
 'Coté Gauche Livraison Airbus
     If CoteGrille = "G" Or CoteGrille = "GS" Then
@@ -540,7 +540,7 @@ Set coll_docs = CATIA.Documents
         objWorkSheet.range("C12") = NoGrilleG
         objWorkSheet.range("C13") = "A" 'Indice
         objWorkSheet.range("F12") = Exemplaire
-        RemontageAirbus objWorkBookControle, 223, "G", Barre
+        RemontageAirbus objWorkBookControle, 223, "G", mBar
     End If
     If CoteGrille = "GS" Then
     'N° et Nom de grille Coté Sym
@@ -549,7 +549,7 @@ Set coll_docs = CATIA.Documents
         objWorkSheetSym.range("C12") = NoGrilleD
         objWorkSheet.range("C13") = "A" 'Indice
         objWorkSheet.range("F12") = Exemplaire
-        RemontageAirbus objWorkBookControleSym, 223, "D", Barre
+        RemontageAirbus objWorkBookControleSym, 223, "D", mBar
     End If
     
     'Enregistrement et fermeture des fichiers Excel
@@ -571,18 +571,18 @@ Exit_CATMain:
 'Libération des classes
     Set PartGrilleD = Nothing
     Set PartGrilleG = Nothing
-    Set Barre = Nothing
+    Set mBar = Nothing
     
 End Sub
 
-Public Sub ExportPt(EP_ListPts, EP_Worksheet, EP_NameConteneur As String, EP_AxeSym As String, Barre)
+Public Sub ExportPt(EP_ListPts, EP_Worksheet, EP_NameConteneur As String, EP_AxeSym As String, mBar)
 'Export des points (A ou B ou autre en fonction du conteneur) vers le fichier de controle excel
 'Inversion du signe pour la valeur symétrique si elle est différente de X, Y ou Z
 ' EP_ListPts(3,x) = tableau de la liste des points
 ' EP_Worksheet =  feuille du fichier excel dans laquelle ecrire les coordonnées
 ' EP_NameConteneur = nom du set géométrique contenant les points
 ' EP_AxeSym = axe de symétrie
-' Barre = objet "barre de progression"
+' mBar = objet "barre de progression"
 
 Dim EP_Counter As Long
 
@@ -596,10 +596,10 @@ EP_Counter = UBound(EP_ListPts, 2)
     End If
 
 EP_Counter = 0
-noEtape = 1: noItem = 1: nbItems = 100: strTitre = " Création de l'export excel, veuillez patienter."
+noEtape = 1: noItem = 1: nbItems = 100: StrTitre = " Création de l'export excel, veuillez patienter."
 While (EP_Counter <= UBound(EP_ListPts, 2))
 
-    Barre.CalculProgression noEtape, nbEtapes, EP_Counter, EP_Counter + 1, " Export des points : " & EP_NameConteneur
+    mBar.CalculProgression noEtape, nbEtapes, EP_Counter, EP_Counter + 1, " Export des points : " & EP_NameConteneur
 
     'Nom du point
     If Frm_Extract.Rbt_Num3D Then
@@ -788,7 +788,7 @@ Next RLPM_counter
 RecupListPtMesure = RLPM_TableauPt()
 End Function
 
-Public Sub ExportAngle(EA_HybridBodyA, EA_Worksheet, EA_Cote As String, Barre)
+Public Sub ExportAngle(EA_HybridBodyA, EA_Worksheet, EA_Cote As String, mBar)
 'Export des angles (Calcul de la distance entre pt A et pt B)
 'pour le Théorique avec les coordonnées exportées du 3D reprises des onglets 'cote droit A' 'cote droit B'
 'Pour le Pratique avec les mesures du fournisseur reprises des onglets 'cote droit A' 'cote droit B'
@@ -810,35 +810,35 @@ ElseIf EA_Cote = "G" Then
 End If
 Dim EA_Formule As String
 
-Dim cPt As Long
-cPt = 1
+Dim cpt As Long
+cpt = 1
 
-While (cPt <= EA_ShapesA.Count)
+While (cpt <= EA_ShapesA.Count)
 
-Barre.CalculProgression noEtape, nbEtapes, cPt, EA_ShapesA.Count, " Export des angles."
+mBar.CalculProgression noEtape, nbEtapes, cpt, EA_ShapesA.Count, " Export des angles."
 
     'Nom du point A
-    Set EA_ShapeA = EA_ShapesA.Item(cPt)
+    Set EA_ShapeA = EA_ShapesA.Item(cpt)
     If Frm_Extract.Rbt_Num3D Then
-        EA_Worksheet.range("A" & cPt + 1) = EA_ShapesA.Item(cPt).Name
+        EA_Worksheet.range("A" & cpt + 1) = EA_ShapesA.Item(cpt).Name
     Else
-        EA_Worksheet.range("A" & cPt + 1) = "A" & cPt
+        EA_Worksheet.range("A" & cpt + 1) = "A" & cpt
     End If
     
-    EA_Worksheet.range("B" & cPt + 1) = "=((" & EA_OngletA & "!B" & cPt + 1 & " -" & EA_OngletB & "!B" & cPt + 1 & ")^2 + (" & EA_OngletA & "!C" & cPt + 1 & "-" & EA_OngletB & "!C" & cPt + 1 & ")^2 +(" & EA_OngletA & "!D" & cPt + 1 & "-" & EA_OngletB & "!D" & cPt + 1 & ")^2)^(1/2)"
-    EA_Worksheet.range("C" & cPt + 1) = "=((" & EA_OngletA & "!E" & cPt + 1 & " -" & EA_OngletB & "!E" & cPt + 1 & ")^2 + (" & EA_OngletA & "!F" & cPt + 1 & "-" & EA_OngletB & "!F" & cPt + 1 & ")^2 +(" & EA_OngletA & "!G" & cPt + 1 & "-" & EA_OngletB & "!G" & cPt + 1 & ")^2)^(1/2)"
+    EA_Worksheet.range("B" & cpt + 1) = "=((" & EA_OngletA & "!B" & cpt + 1 & " -" & EA_OngletB & "!B" & cpt + 1 & ")^2 + (" & EA_OngletA & "!C" & cpt + 1 & "-" & EA_OngletB & "!C" & cpt + 1 & ")^2 +(" & EA_OngletA & "!D" & cpt + 1 & "-" & EA_OngletB & "!D" & cpt + 1 & ")^2)^(1/2)"
+    EA_Worksheet.range("C" & cpt + 1) = "=((" & EA_OngletA & "!E" & cpt + 1 & " -" & EA_OngletB & "!E" & cpt + 1 & ")^2 + (" & EA_OngletA & "!F" & cpt + 1 & "-" & EA_OngletB & "!F" & cpt + 1 & ")^2 +(" & EA_OngletA & "!G" & cpt + 1 & "-" & EA_OngletB & "!G" & cpt + 1 & ")^2)^(1/2)"
     
-    EA_Formule = "=60*2*(ATAN(((((((" & EA_OngletA & "!B" & cPt + 1 & "-" & EA_OngletB & "!B" & cPt + 1 & ")/B" & cPt + 1 & ")-((" & EA_OngletA & "!E" & cPt + 1 & "-" & EA_OngletB & "!E" & cPt + 1 & ")/C" & cPt + 1 & "))^2+" _
-    & "(((" & EA_OngletA & "!C" & cPt + 1 & "-" & EA_OngletB & "!C" & cPt + 1 & ")/B" & cPt + 1 & ")-((" & EA_OngletA & "!F" & cPt + 1 & "-" & EA_OngletB & "!F" & cPt + 1 & ")/C" & cPt + 1 & "))^2+(((" & EA_OngletA & "!D" & cPt + 1 & "-" & EA_OngletB & "!D" & cPt + 1 & ")/B" & cPt + 1 & ")-((" & EA_OngletA & "!G" & cPt + 1 & "-" & EA_OngletB & "!G" & cPt + 1 & ")/C" & cPt + 1 & "))^2)^(1/2))/2)/( -((((((" & EA_OngletA & "!B" & cPt + 1 & "-" & EA_OngletB & "!B" & cPt + 1 & ")/B" & cPt + 1 & ")-" _
-    & "((" & EA_OngletA & "!E" & cPt + 1 & "-" & EA_OngletB & "!E" & cPt + 1 & ")/C" & cPt + 1 & "))^2+(((" & EA_OngletA & "!C" & cPt + 1 & "-" & EA_OngletB & "!C" & cPt + 1 & ")/B" & cPt + 1 & ")-((" & EA_OngletA & "!F" & cPt + 1 & "-" & EA_OngletB & "!F" & cPt + 1 & ")/C" & cPt + 1 & "))^2+(((" & EA_OngletA & "!D" & cPt + 1 & "-" & EA_OngletB & "!D" & cPt + 1 & ")/B" & cPt + 1 & ")-((" & EA_OngletA & "!G" & cPt + 1 & "-" & EA_OngletB & "!G" & cPt + 1 & ")/C" & cPt + 1 & "))^2)^(1/2))/2)*((((((" & EA_OngletA & "!B" & cPt + 1 & "-" & EA_OngletB & "!B" & cPt + 1 & ")/B" & cPt + 1 & ")-((" & EA_OngletA & "!E" & cPt + 1 & "-" & EA_OngletB & "!E" & cPt + 1 & ")/C" & cPt + 1 & "))^2+(((" & EA_OngletA & "!C" & cPt + 1 & "-" & EA_OngletB & "!C" & cPt + 1 & ")/B" & cPt + 1 & ")-((" & EA_OngletA & "!F" & cPt + 1 & "-" & EA_OngletB & "!F" & cPt + 1 & ")/C" & cPt + 1 & "))^2+(((" & EA_OngletA & "!D" & cPt + 1 _
-    & "-" & EA_OngletB & "!D" & cPt + 1 & ")/B" & cPt + 1 & ")-((" & EA_OngletA & "!G" & cPt + 1 & "-" & EA_OngletB & "!G" & cPt + 1 & ")/C" & cPt + 1 & "))^2)^(1/2))/2)+1)^(1/2)))*180/3,1415926535898"
+    EA_Formule = "=60*2*(ATAN(((((((" & EA_OngletA & "!B" & cpt + 1 & "-" & EA_OngletB & "!B" & cpt + 1 & ")/B" & cpt + 1 & ")-((" & EA_OngletA & "!E" & cpt + 1 & "-" & EA_OngletB & "!E" & cpt + 1 & ")/C" & cpt + 1 & "))^2+" _
+    & "(((" & EA_OngletA & "!C" & cpt + 1 & "-" & EA_OngletB & "!C" & cpt + 1 & ")/B" & cpt + 1 & ")-((" & EA_OngletA & "!F" & cpt + 1 & "-" & EA_OngletB & "!F" & cpt + 1 & ")/C" & cpt + 1 & "))^2+(((" & EA_OngletA & "!D" & cpt + 1 & "-" & EA_OngletB & "!D" & cpt + 1 & ")/B" & cpt + 1 & ")-((" & EA_OngletA & "!G" & cpt + 1 & "-" & EA_OngletB & "!G" & cpt + 1 & ")/C" & cpt + 1 & "))^2)^(1/2))/2)/( -((((((" & EA_OngletA & "!B" & cpt + 1 & "-" & EA_OngletB & "!B" & cpt + 1 & ")/B" & cpt + 1 & ")-" _
+    & "((" & EA_OngletA & "!E" & cpt + 1 & "-" & EA_OngletB & "!E" & cpt + 1 & ")/C" & cpt + 1 & "))^2+(((" & EA_OngletA & "!C" & cpt + 1 & "-" & EA_OngletB & "!C" & cpt + 1 & ")/B" & cpt + 1 & ")-((" & EA_OngletA & "!F" & cpt + 1 & "-" & EA_OngletB & "!F" & cpt + 1 & ")/C" & cpt + 1 & "))^2+(((" & EA_OngletA & "!D" & cpt + 1 & "-" & EA_OngletB & "!D" & cpt + 1 & ")/B" & cpt + 1 & ")-((" & EA_OngletA & "!G" & cpt + 1 & "-" & EA_OngletB & "!G" & cpt + 1 & ")/C" & cpt + 1 & "))^2)^(1/2))/2)*((((((" & EA_OngletA & "!B" & cpt + 1 & "-" & EA_OngletB & "!B" & cpt + 1 & ")/B" & cpt + 1 & ")-((" & EA_OngletA & "!E" & cpt + 1 & "-" & EA_OngletB & "!E" & cpt + 1 & ")/C" & cpt + 1 & "))^2+(((" & EA_OngletA & "!C" & cpt + 1 & "-" & EA_OngletB & "!C" & cpt + 1 & ")/B" & cpt + 1 & ")-((" & EA_OngletA & "!F" & cpt + 1 & "-" & EA_OngletB & "!F" & cpt + 1 & ")/C" & cpt + 1 & "))^2+(((" & EA_OngletA & "!D" & cpt + 1 _
+    & "-" & EA_OngletB & "!D" & cpt + 1 & ")/B" & cpt + 1 & ")-((" & EA_OngletA & "!G" & cpt + 1 & "-" & EA_OngletB & "!G" & cpt + 1 & ")/C" & cpt + 1 & "))^2)^(1/2))/2)+1)^(1/2)))*180/3,1415926535898"
     
-    EA_Worksheet.range("D" & cPt + 1).formulalocal = EA_Formule
-    cPt = cPt + 1
+    EA_Worksheet.range("D" & cpt + 1).formulalocal = EA_Formule
+    cpt = cpt + 1
 Wend
 
 'Mise en forme conditionnelle. Si l'écart est suppérieur à 10, le texte passe en rouge
-With EA_Worksheet.range("D2:D" & cPt)
+With EA_Worksheet.range("D2:D" & cpt)
    .formatconditions.Delete
    .formatconditions.Add xLCellValue, xLGreater, "10"
    .formatconditions(1).Font.colorindex = 3
@@ -846,35 +846,35 @@ End With
 
 End Sub
 
-Public Sub ExportDiam(ED_HybridBodyA, ED_WorkSheet, Barre)
+Public Sub ExportDiam(ED_HybridBodyA, ED_WorkSheet, mBar)
 'Formatage de l'onglet des Diamètres de perçages (actuellement on ne sait pas récupérer la valeur des Diamètre)
 'Création d'une ligne "Diam x" pour chaque point
 
 Dim ED_Shapes As HybridShapes
 Set ED_Shapes = ED_HybridBodyA.HybridShapes
-Dim cPt As Long
-cPt = 1
+Dim cpt As Long
+cpt = 1
 
 Dim ED_Shape As HybridShape
 
-While (cPt <= ED_Shapes.Count)
-Barre.CalculProgression noEtape, nbEtapes, cPt, ED_Shapes.Count, " Export des Diamètres "
+While (cpt <= ED_Shapes.Count)
+mBar.CalculProgression noEtape, nbEtapes, cpt, ED_Shapes.Count, " Export des Diamètres "
 
-    Set ED_Shape = ED_Shapes.Item(cPt)
-    ED_WorkSheet.range("A" & cPt + 1) = "  Ø  " & ED_Shapes.Item(cPt).Name
-    ED_WorkSheet.range("F" & cPt + 1) = "=RC[-3]-RC[-4]"
-    cPt = cPt + 1
+    Set ED_Shape = ED_Shapes.Item(cpt)
+    ED_WorkSheet.range("A" & cpt + 1) = "  Ø  " & ED_Shapes.Item(cpt).Name
+    ED_WorkSheet.range("F" & cpt + 1) = "=RC[-3]-RC[-4]"
+    cpt = cpt + 1
 Wend
-CouleurCell ED_WorkSheet, "B2", "E" & cPt, "jaune"
-CouleurCell ED_WorkSheet, "G2", "G" & cPt, "jaune"
+CouleurCell ED_WorkSheet, "B2", "E" & cpt, "jaune"
+CouleurCell ED_WorkSheet, "G2", "G" & cpt, "jaune"
 
 End Sub
-Public Sub RemontageAirbus(RA_WorkBook, RA_Ligne As Integer, RA_Cote As String, Barre)
+Public Sub RemontageAirbus(RA_WorkBook, RA_Ligne As Integer, RA_Cote As String, mBar)
 'RA_WorkBook Classeur excel
 'RA_Ligne N° de ligne en court dans le fichier excel
 'RA_Cote = Coté de la Grille ("D", "G")
 Dim NomPt As String, NomPtA As String, NomPtB As String
-Dim cPt As Long
+Dim cpt As Long
 Dim RA_cptA As String, RA_cptB As String
 Dim FeuilleDatum As String, _
     FeuillePied As String, _
@@ -907,14 +907,14 @@ Dim RA_WSheet_Datum, _
     Set RA_WSheet_PtB = RA_WorkBook.worksheets.Item(FeuillePtB)
     Set RA_WSheet_Livraison = RA_WorkBook.worksheets.Item(FeuilleLivraison)
 
-    cPt = 2
+    cpt = 2
     noEtape = noEtape + 2
 '### Les Datum ###
     'Trace la ligne du Titre
     RA_cptA = "A" & RA_Ligne
     RA_cptB = "I" & RA_Ligne
     
-    NomPt = RA_WSheet_Datum.range("A" & cPt)
+    NomPt = RA_WSheet_Datum.range("A" & cpt)
     
     'Pas de la ligne de titre si pas de points
     If NomPt <> "" Then
@@ -926,7 +926,7 @@ Dim RA_WSheet_Datum, _
     
     While (NomPt <> "")
 
-        Barre.CalculProgression noEtape, nbEtapes, cPt, NbDatums, " Remontage Airbus Pinnules : " & NomPt
+        mBar.CalculProgression noEtape, nbEtapes, cpt, NbDatums, " Remontage Airbus Pinnules : " & NomPt
         'Trace la ligne d'entète
         '############################
         'Ajouter une détection de haut de page
@@ -935,7 +935,7 @@ Dim RA_WSheet_Datum, _
         TraceCadreEnTete RA_WSheet_Livraison, RA_Ligne
         RA_Ligne = RA_Ligne + 1
         'Trace le cadre du point
-        TraceCadreDatum RA_WSheet_Livraison, RA_Ligne, NomPt, cPt, CStr(FeuilleDatum)
+        TraceCadreDatum RA_WSheet_Livraison, RA_Ligne, NomPt, cpt, CStr(FeuilleDatum)
         RA_Ligne = RA_Ligne + 3
         'Trace la ligne de localisation
         TraceCadreLoc RA_WSheet_Livraison, RA_Ligne
@@ -944,10 +944,10 @@ Dim RA_WSheet_Datum, _
         TraceLigneVide RA_WSheet_Livraison, RA_Ligne
         RA_Ligne = RA_Ligne + 1
         
-        cPt = cPt + 1
-        NomPt = RA_WSheet_Datum.range("A" & cPt)
+        cpt = cpt + 1
+        NomPt = RA_WSheet_Datum.range("A" & cpt)
     Wend
-    cPt = 2
+    cpt = 2
     noEtape = noEtape + 2
     
 '### Les Pieds ###
@@ -955,7 +955,7 @@ Dim RA_WSheet_Datum, _
     RA_cptA = "A" & RA_Ligne
     RA_cptB = "I" & RA_Ligne
     
-    NomPt = RA_WSheet_Pieds.range("A" & cPt)
+    NomPt = RA_WSheet_Pieds.range("A" & cpt)
     
     'Pas de ligne de titre si pas de points
     If NomPt <> "" Then
@@ -966,7 +966,7 @@ Dim RA_WSheet_Datum, _
         RA_Ligne = RA_Ligne + 1
     End If
     While (NomPt <> "")
-        Barre.CalculProgression noEtape, nbEtapes, cPt, NbFeets, " Remontage Airbus Pieds : " & NomPt
+        mBar.CalculProgression noEtape, nbEtapes, cpt, NbFeets, " Remontage Airbus Pieds : " & NomPt
         
         'Trace la ligne d'entète
         '############################
@@ -976,16 +976,16 @@ Dim RA_WSheet_Datum, _
         TraceCadreEnTete RA_WSheet_Livraison, RA_Ligne
         RA_Ligne = RA_Ligne + 1
         'Trace le cadre du point
-        TraceCadreFeet RA_WSheet_Livraison, RA_Ligne, NomPt, cPt, RA_Cote
+        TraceCadreFeet RA_WSheet_Livraison, RA_Ligne, NomPt, cpt, RA_Cote
         RA_Ligne = RA_Ligne + 1
         'Trace une ligne vide
         TraceLigneVide RA_WSheet_Livraison, RA_Ligne
         RA_Ligne = RA_Ligne + 1
 
-        cPt = cPt + 1
-        NomPt = RA_WSheet_Pieds.range("A" & cPt)
+        cpt = cpt + 1
+        NomPt = RA_WSheet_Pieds.range("A" & cpt)
     Wend
-    cPt = 2
+    cpt = 2
     noEtape = noEtape + 2
 
 '### Les Points ###
@@ -1000,12 +1000,12 @@ Dim RA_WSheet_Datum, _
     RA_cptA = "A" & RA_Ligne
     RA_cptB = "I" & RA_Ligne + 2
         
-    NomPtA = RA_WSheet_PtA.range("A" & cPt)
-    NomPtB = RA_WSheet_PtB.range("A" & cPt)
+    NomPtA = RA_WSheet_PtA.range("A" & cpt)
+    NomPtB = RA_WSheet_PtB.range("A" & cpt)
     RA_Ligne = RA_Ligne + 1
     
     While (NomPtA <> "")
-        Barre.CalculProgression noEtape, nbEtapes, cPt, NbPts, " Remontage Airbus Points : " & NomPtA
+        mBar.CalculProgression noEtape, nbEtapes, cpt, NbPts, " Remontage Airbus Points : " & NomPtA
         '############################
         'Ajouter une détection de haut de page
         '############################
@@ -1013,15 +1013,15 @@ Dim RA_WSheet_Datum, _
         TraceCadreEnTete RA_WSheet_Livraison, RA_Ligne
         RA_Ligne = RA_Ligne + 1
         'Trace le cadre du point
-        TraceCadrePT RA_WSheet_Livraison, RA_Ligne, NomPtA, NomPtB, cPt, RA_Cote
+        TraceCadrePT RA_WSheet_Livraison, RA_Ligne, NomPtA, NomPtB, cpt, RA_Cote
         RA_Ligne = RA_Ligne + 1
         'Trace une ligne vide
         TraceLigneVide RA_WSheet_Livraison, RA_Ligne
         RA_Ligne = RA_Ligne + 1
         
-        cPt = cPt + 1
-        NomPtA = RA_WSheet_PtA.range("A" & cPt)
-        NomPtB = RA_WSheet_PtB.range("A" & cPt)
+        cpt = cpt + 1
+        NomPtA = RA_WSheet_PtA.range("A" & cpt)
+        NomPtB = RA_WSheet_PtB.range("A" & cpt)
     Wend
     
     'Ajout page Synthèse
@@ -1083,7 +1083,7 @@ BorduresCell TCD_WorkSheet, TCD_cPtA, TCD_cPtB
 
 End Sub
 
-Public Sub TraceCadreFeet(wSheet, iLigne As Integer, PtNom, cPt As Long, Cote As String)
+Public Sub TraceCadreFeet(wSheet, iLigne As Integer, PtNom, cpt As Long, Cote As String)
 'Trace le bloc des lignes de ccordonnées de points (X, Y, Z) pour les Pieds
 'wSheet = Feuille excel
 'iLigne = N° de la premiere ligne du cadre
@@ -1117,14 +1117,14 @@ Dim TolPtAInf As Double, TolPtASup As Double
     wSheet.range("D" & iLigne + 2) = "  Z  "
     
     'Nominale
-    wSheet.range("E" & iLigne) = "=" & wSeetFeet & "!B" & cPt
-    wSheet.range("E" & iLigne + 1) = "=" & wSeetFeet & "!C" & cPt
-    wSheet.range("E" & iLigne + 2) = "=" & wSeetFeet & "!D" & cPt
+    wSheet.range("E" & iLigne) = "=" & wSeetFeet & "!B" & cpt
+    wSheet.range("E" & iLigne + 1) = "=" & wSeetFeet & "!C" & cpt
+    wSheet.range("E" & iLigne + 2) = "=" & wSeetFeet & "!D" & cpt
 
     'Mesurée
-    wSheet.range("F" & iLigne) = "=" & wSeetFeet & "!E" & cPt
-    wSheet.range("F" & iLigne + 1) = "=" & wSeetFeet & "!F" & cPt
-    wSheet.range("F" & iLigne + 2) = "=" & wSeetFeet & "!G" & cPt
+    wSheet.range("F" & iLigne) = "=" & wSeetFeet & "!E" & cpt
+    wSheet.range("F" & iLigne + 1) = "=" & wSeetFeet & "!F" & cpt
+    wSheet.range("F" & iLigne + 2) = "=" & wSeetFeet & "!G" & cpt
     
     'tolerances
     cPtA = "G" & iLigne
@@ -1148,7 +1148,7 @@ Dim TolPtAInf As Double, TolPtASup As Double
     wSheet.range("A" & iLigne) = MG_msg(20)
     wSheet.range("D" & iLigne) = "  D  "
     wSheet.range("E" & iLigne) = 0
-    wSheet.range("F" & iLigne) = "=" & wSeetFeet & "!I" & cPt
+    wSheet.range("F" & iLigne) = "=" & wSeetFeet & "!I" & cpt
     wSheet.range("G" & iLigne) = TolPtAInf
     wSheet.range("H" & iLigne) = TolPtASup
     wSheet.range("I" & iLigne) = "=F" & iLigne & "-E" & iLigne
@@ -1170,7 +1170,7 @@ Dim TolPtAInf As Double, TolPtASup As Double
 
 End Sub
 
-Public Sub TraceCadrePT(wSheet, iLigne As Integer, nPtA, nPtB, cPt As Long, strCote As String)
+Public Sub TraceCadrePT(wSheet, iLigne As Integer, nPtA, nPtB, cpt As Long, strCote As String)
 'Trace le bloc des lignes de ccordonnées de points (X, Y, Z) pour les Points A et B
 'wSheet = Feuille excel
 'iLigne = N° de la premiere ligne du cadre
@@ -1228,24 +1228,24 @@ Dim TolDiaSup As String, TolDiaInf As String
     wSheet.range("D" & iLigne + 5) = "  Z  "
     
     'Nominale pt A
-    wSheet.range("E" & iLigne) = "=" & nwsPtA & "!B" & cPt
-    wSheet.range("E" & iLigne + 1) = "=" & nwsPtA & "!C" & cPt
-    wSheet.range("E" & iLigne + 2) = "=" & nwsPtA & "!D" & cPt
+    wSheet.range("E" & iLigne) = "=" & nwsPtA & "!B" & cpt
+    wSheet.range("E" & iLigne + 1) = "=" & nwsPtA & "!C" & cpt
+    wSheet.range("E" & iLigne + 2) = "=" & nwsPtA & "!D" & cpt
     
     'Nominale pt B
-    wSheet.range("E" & iLigne + 3) = "=" & nwsPtB & "!B" & cPt
-    wSheet.range("E" & iLigne + 4) = "=" & nwsPtB & "!C" & cPt
-    wSheet.range("E" & iLigne + 5) = "=" & nwsPtB & "!D" & cPt
+    wSheet.range("E" & iLigne + 3) = "=" & nwsPtB & "!B" & cpt
+    wSheet.range("E" & iLigne + 4) = "=" & nwsPtB & "!C" & cpt
+    wSheet.range("E" & iLigne + 5) = "=" & nwsPtB & "!D" & cpt
     
     'mesures pt A
-    wSheet.range("F" & iLigne) = "=" & nwsPtA & "!E" & cPt
-    wSheet.range("F" & iLigne + 1) = "=" & nwsPtA & "!F" & cPt
-    wSheet.range("F" & iLigne + 2) = "=" & nwsPtA & "!G" & cPt
+    wSheet.range("F" & iLigne) = "=" & nwsPtA & "!E" & cpt
+    wSheet.range("F" & iLigne + 1) = "=" & nwsPtA & "!F" & cpt
+    wSheet.range("F" & iLigne + 2) = "=" & nwsPtA & "!G" & cpt
     
     'mesures pt B
-    wSheet.range("F" & iLigne + 3) = "=" & nwsPtB & "!E" & cPt
-    wSheet.range("F" & iLigne + 4) = "=" & nwsPtB & "!F" & cPt
-    wSheet.range("F" & iLigne + 5) = "=" & nwsPtB & "!G" & cPt
+    wSheet.range("F" & iLigne + 3) = "=" & nwsPtB & "!E" & cpt
+    wSheet.range("F" & iLigne + 4) = "=" & nwsPtB & "!F" & cpt
+    wSheet.range("F" & iLigne + 5) = "=" & nwsPtB & "!G" & cpt
 
     'les tolerances pt A
     TolPtASup = 0.2
@@ -1295,7 +1295,7 @@ Dim TolDiaSup As String, TolDiaInf As String
     wSheet.range("A" & iLigne).cells.HorizontalAlignment = xLDroite
     wSheet.range("D" & iLigne) = "mm"
     wSheet.range("E" & iLigne) = 0
-    wSheet.range("F" & iLigne) = "=2*(" & nwsPtA & "!H" & cPt & ")"
+    wSheet.range("F" & iLigne) = "=2*(" & nwsPtA & "!H" & cpt & ")"
     wSheet.range("G" & iLigne) = TolPtAInf
     wSheet.range("H" & iLigne) = TolPtASup
     wSheet.range("I" & iLigne) = "=F" & iLigne & "-E" & iLigne
@@ -1321,7 +1321,7 @@ Dim TolDiaSup As String, TolDiaInf As String
     wSheet.range("A" & iLigne).cells.HorizontalAlignment = xLDroite
     wSheet.range("D" & iLigne) = "min"
     wSheet.range("E" & iLigne) = 0
-    wSheet.range("F" & iLigne) = "=" & nwsAngle & "!D" & cPt
+    wSheet.range("F" & iLigne) = "=" & nwsAngle & "!D" & cpt
     wSheet.range("G" & iLigne) = TolPtAInf
     wSheet.range("H" & iLigne) = TolPtASup
     wSheet.range("I" & iLigne) = "=F" & iLigne & "-E" & iLigne
@@ -1345,10 +1345,10 @@ Dim TolDiaSup As String, TolDiaInf As String
     wSheet.range("A" & iLigne) = MG_msg(42)
     wSheet.range("A" & iLigne).cells.HorizontalAlignment = xLDroite
     wSheet.range("D" & iLigne) = "  Ø  "
-    wSheet.range("E" & iLigne) = "=" & nwsDiam & "!B" & cPt
-    wSheet.range("F" & iLigne) = "=" & nwsDiam & "!C" & cPt
-    wSheet.range("G" & iLigne) = "=" & nwsDiam & "!D" & cPt
-    wSheet.range("H" & iLigne) = "=" & nwsDiam & "!E" & cPt
+    wSheet.range("E" & iLigne) = "=" & nwsDiam & "!B" & cpt
+    wSheet.range("F" & iLigne) = "=" & nwsDiam & "!C" & cpt
+    wSheet.range("G" & iLigne) = "=" & nwsDiam & "!D" & cpt
+    wSheet.range("H" & iLigne) = "=" & nwsDiam & "!E" & cpt
     wSheet.range("I" & iLigne) = "=F" & iLigne & "-E" & iLigne
     
     TolDiaSup = "=$H$" & iLigne
