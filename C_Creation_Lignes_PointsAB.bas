@@ -180,6 +180,7 @@ Sub SelectPoints(SP_Type As Integer, ByRef GrilleActive)
 'Si type = 1 -> selection manuelle des points
 'Si type =2 -> tous le set géométrique "Reférence externes isolées"
 Dim i As Integer
+Dim TypRef As String
 Dim tab_selection(0)
     tab_selection(0) = "HybridShape"
 Dim Retour_Selection As String
@@ -195,7 +196,8 @@ Dim MsgSel As String
         End If
     ElseIf SP_Type = 2 Then 'tous le set géométrique "Reférence externes isolées"
         For i = 1 To GrilleActive.Hb(nHBRefExtIsol).HybridShapes.Count
-            If TypeName(GrilleActive.Hb(nHBRefExtIsol).HybridShapes.Item(i)) = "HybridShapeInstance" Then
+            TypRef = TypeName(GrilleActive.Hb(nHBRefExtIsol).HybridShapes.Item(i))
+            If TypRef = "HybridShapeInstance" Or TypRef = "HybridShapePointExplicit" Then
                 GrilleActive.GrilleSelection.Add GrilleActive.Hb(nHBRefExtIsol).HybridShapes.Item(i)
             End If
         Next
@@ -210,6 +212,7 @@ Function Create_Pt(ByRef GrilleActive, CP_TypeSTD As String, CP_Num As Integer, 
 
 Dim Comments As String, Name_STD As String
 Dim Nom_FauxPtA_Parent As String, No_FauxPtA_Parent As String, Nom_NewPt As String, No_NewPt As String
+Dim Nb_Std As Long
 Dim cpt As Long, i As Integer
     cpt = 1
 Dim mHSIntersectA As HybridShapeIntersection, mHSIntersectB As HybridShapeIntersection
@@ -218,36 +221,47 @@ Dim mHSIntersectSTD
     mBar.Titre = " Création des droites AB, veuillez patienter."
 
 While (cpt <= GrilleActive.GrilleSelection.Count)
-    
+    Nb_Std = GrilleActive.Hb(nHBStd).HybridShapes.Count
     If CP_TypeSTD = "RefSTD" Then
-        'Recupération du Numero de std pour nommer les points A et B
-        'Recherche parmis les lignes STD celle dont le point d'origine porte le même nom que l'UFD sélectionné
-        For i = 0 To GrilleActive.Hb(nHBStd).HybridShapes.Count - 1
-            Nom_FauxPtA_Parent = GrilleActive.Hb(nHBStd).HybridShapes.Item(i + 1).PtOrigine.DisplayName
+        'Recupération du Numero du point d'origine de la ligne std pour nommer les points A et B
+        For i = 1 To Nb_Std
+            Nom_FauxPtA_Parent = GrilleActive.Hb(nHBStd).HybridShapes.Item(i).PtOrigine.DisplayName
             Nom_NewPt = Right(Nom_FauxPtA_Parent, Len(GrilleActive.GrilleSelection.Item(cpt).Value.Name))
+            'Recherche parmis les lignes STD celle dont le point d'origine porte le même nom que l'UFD sélectionné
             If GrilleActive.GrilleSelection.Item(cpt).Value.Name = Nom_NewPt Then
-                Set mHSIntersectSTD = GrilleActive.Hb(nHBStd).HybridShapes.Item(i + 1)
+                Set mHSIntersectSTD = GrilleActive.Hb(nHBStd).HybridShapes.Item(i)
                 'Récupération du N° du point parent (si fauxA49-xxx on récupère 49)
                 No_NewPt = Left(Nom_FauxPtA_Parent, InStr(Nom_FauxPtA_Parent, "-") - 1)
                 No_NewPt = Right(No_NewPt, Len(No_NewPt) - 6) '"faux A " = 6 caractères
                 Exit For
             End If
         Next
-    Else
-        '
-    
-    End If
-    If IsEmpty(mHSIntersectSTD) Then
-        MsgBox "La ligne STD n'a pas été trouvée. Impossible de créer les points A et point B", vbInformation, "Elément manquant"
-        End
+        Comments = GrilleActive.GrilleSelection.Item(cpt).Value.GetParameter("Comments").Value
+        Name_STD = GrilleActive.GrilleSelection.Item(cpt).Value.Name
+        If IsEmpty(mHSIntersectSTD) Then
+            MsgBox "La ligne STD n'a pas été trouvée. Impossible de créer les points A et point B", vbInformation, "Elément manquant"
+            End
+        End If
+    ElseIf CP_TypeSTD = "RefPrpSurf0" Then
+        'Recupération du Numero du point de reference de la ligne std pour nommer les points A et B
+        For i = 1 To Nb_Std
+            Nom_FauxPtA_Parent = GrilleActive.Hb(nHBStd).HybridShapes.Item(i).Point.DisplayName
+            If GrilleActive.GrilleSelection.Item(cpt).Value.Name = Nom_FauxPtA_Parent Then
+                'Récupération du N° du point parent
+                Set mHSIntersectSTD = GrilleActive.Hb(nHBStd).HybridShapes.Item(i)
+                No_NewPt = i
+                Exit For
+            End If
+        Next i
+        If IsEmpty(mHSIntersectSTD) Then
+            MsgBox "La ligne STD n'a pas été trouvée. Impossible de créer les points A et point B", vbInformation, "Elément manquant"
+            End
+        End If
     End If
     
 'Maj Barre de progression
     mBar.Progression = 50 + (50 / GrilleActive.GrilleSelection.Count) * cpt
     
-    Comments = GrilleActive.GrilleSelection.Item(cpt).Value.GetParameter("Comments").Value
-    Name_STD = GrilleActive.GrilleSelection.Item(cpt).Value.Name
-
 'Point A
     If (Check_PtExist(GrilleActive.Hb(nHBPtA), Name_STD) <> 1) Then
         'Création de l'intersection entre la ligne STD et la surface à 0
@@ -434,6 +448,7 @@ Private Function CreateStdPerpSurf0(ByRef GrilleActive, mBar) As Boolean
 Dim mHSfact As HybridShapeFactory
 Dim HFSurf0 As HybridShape
 Dim mPt As HybridShape
+Dim NoSTD As Long
 Dim mHSNormale As HybridShapeLineNormal
 Dim cpt As Long
     cpt = 1
@@ -441,14 +456,16 @@ Dim cpt As Long
     Set mHSfact = GrilleActive.PartGrille.HybridShapeFactory
     Set HFSurf0 = GrilleActive.HS(nSurf0, nHBS0)
     GrilleActive.PartGrille.InWorkObject = GrilleActive.Hb(nHBStd)
-    
+    'Récupère le nombre de lignes STD pour poursuivre la numérotation
+    NoSTD = GrilleActive.Hb(nHBStd).HybridShapes.Count
     'Boucle sur la sélection des points
     While (cpt <= GrilleActive.GrilleSelection.Count)
-     Set mPt = GrilleActive.GrilleSelection.Item(cpt).Value
+        NoSTD = NoSTD + 1
+        Set mPt = GrilleActive.GrilleSelection.Item(cpt).Value
     
         Set mHSNormale = mHSfact.AddNewLineNormal(HFSurf0, mPt, 20#, 20#, False)
         mHSNormale.FirstUptoElem = HFSurf0
-    
+        mHSNormale.Name = "Line." & NoSTD
         GrilleActive.Hb(nHBStd).AppendHybridShape mHSNormale
         GrilleActive.PartGrille.InWorkObject = mHSNormale
         cpt = cpt + 1
