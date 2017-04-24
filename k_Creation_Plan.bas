@@ -1,7 +1,7 @@
 Attribute VB_Name = "k_Creation_Plan"
 Option Explicit
 
-Sub catmain()
+Sub CATMain()
 ' *****************************************************************
 ' * Création des vues de base d'une grille
 ' * Ajout des Notas
@@ -10,7 +10,7 @@ Sub catmain()
 ' *
 ' * Création CFR le 19/08/2016
 ' * Modification le 15/12/2016 Intégration à la macro générale des grilles
-' *
+' *                 24/4/17 Correction Bug plan grille nue
 ' *
 ' *****************************************************************
 
@@ -84,11 +84,7 @@ Dim DoctoCart As Document
      AxeViewFront = CalProjectionView(mgrille)
      
     'Tracé des vues
-    If FRM_Plan.Rbt_Ens Then
-        DesignVues DocTo2D, mSheets, OrientPlan, FormatPlan, AxeViewFront
-    Else
-        DesignVues DoctoCart, mSheets, OrientPlan, FormatPlan, AxeViewFront
-    End If
+    DesignVues DocTo2D, mSheets, OrientPlan, FormatPlan, AxeViewFront
     'DesignVues DocTo2D, mSheets, OrientPlan, FormatPlan, AxeViewFront
     
     'Insetion des Ditos
@@ -225,7 +221,7 @@ Dim DimSheet As Pos2D, PosDitoEC As Pos2D
 Dim TxtDito
 Dim TxtInstancie As DrawingText
 Dim ValTxtDito As String
-Dim cPt As Integer 'Compteur de remarques
+Dim cpt As Integer 'Compteur de remarques
 Dim Nremark As Integer 'ReNumérotation des remarques dans le calque des vues
 
     Set mSheets = mdraw.Sheets
@@ -250,179 +246,179 @@ Dim Nremark As Integer 'ReNumérotation des remarques dans le calque des vues
         PosDitoEC.Y = PosDitoEC.Y - 20
         PosDitoEC.X = PosDitoEC.X - 173
         
-    For cPt = 1 To 18
-        Select Case cPt
+    For cpt = 1 To 18
+        Select Case cpt
             Case 1  '"Remarks1"
                 Nremark = Nremark + 1
                 'Instanciation du Dito
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 'Explose le Dito
                 ExplodeDito mdraw, mDito
                 'Memorise le dernier texte instancié pour lier le suivant
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 'Calcule la position du Dito suivant
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 4)  'Hauteur du Dito inséré
         
             Case 2  '"Remarks2"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 ExplodeDito mdraw, mDito
                 'Lie le texte instancié au précédent
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 2) 'Hauteur du Dito inséré
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
             Case 3  '"Remarks3"
                 If mCC Then
                     Nremark = Nremark + 1
-                    mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                    mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                     ExplodeDito mdraw, mDito
-                    AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                    Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                    AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                    Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                     PosDitoEC.Y = PosDitoEC.Y - (HLig * 2) 'Hauteur du Dito inséré
                 End If
             
             Case 4  '"Remarks4"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 ExplodeDito mdraw, mDito
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 2)  'Hauteur du Dito inséré
                 
             Case 5  '"Remarks5"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 'Remplacement du texte xRmAj par H7,H8,F8
                 Set TxtDito = mDito.Cible.GetModifiableObject(1)
                 If mCC Then ValTxtDito = "H8" Else ValTxtDito = "H7"
                 TxtDito.Text = Replace(CStr(TxtDito.Text), "xRmAj", ValTxtDito, 1, , vbTextCompare)
                 ExplodeDito mdraw, mDito
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 3)  'Hauteur du Dito inséré
                 
             Case 6  '"Remarks6"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 ExplodeDito mdraw, mDito
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 4) 'Hauteur du Dito inséré
                 
             Case 7  '"Remarks7"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 ExplodeDito mdraw, mDito
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 4) 'Hauteur du Dito inséré
                 
             Case 8  '"Remarks8"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 ExplodeDito mdraw, mDito
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 11) 'Hauteur du Dito inséré
             
             Case 9  '"Remarks9"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 'Remplacement du texte "xRmPartNbr" par le part number
                 Set TxtDito = mDito.Cible.GetModifiableObject(1)
                 ValTxtDito = NoPart
                 TxtDito.Text = Replace(CStr(TxtDito.Text), "xRmPartNbr", ValTxtDito, 1, , vbTextCompare)
                 ExplodeDito mdraw, mDito
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 3) 'Hauteur du Dito inséré
             
             Case 10 '"Remarks10"
                 If mSym Then
                     Nremark = Nremark + 1
-                    mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                    mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                     'Remplacement du texte "xRmPartNbrSym" par le part number
                     Set TxtDito = mDito.Cible.GetModifiableObject(1)
                     ValTxtDito = NoPartSym
                     TxtDito.Text = Replace(CStr(TxtDito.Text), "xRmPartNbrSym", ValTxtDito, 1, , vbTextCompare)
                     ExplodeDito mdraw, mDito
-                    AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                    Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                    AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                    Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                     PosDitoEC.Y = PosDitoEC.Y - (HLig * 3) 'Hauteur du Dito inséré
                 End If
                 
             Case 11 '"Remarks11"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 ExplodeDito mdraw, mDito
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 4) 'Hauteur du Dito inséré
                 
             Case 12 '"Remarks12"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 ExplodeDito mdraw, mDito
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 8) 'Hauteur du Dito inséré
             
             Case 13 '"Remarks13"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 ExplodeDito mdraw, mDito
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 2) 'Hauteur du Dito inséré
                 
             Case 14 '"Remarks14"
                 If mVT Then
                     Nremark = Nremark + 1
-                    mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                    mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                     ExplodeDito mdraw, mDito
-                    AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                    Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                    AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                    Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                     PosDitoEC.Y = PosDitoEC.Y - (HLig * 2) 'Hauteur du Dito inséré
                 End If
                 
             Case 15 '"Remarks15"
                 If mVT Then
                     Nremark = Nremark + 1
-                    mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                    mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                     ExplodeDito mdraw, mDito
-                    AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                    Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                    AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                    Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                     PosDitoEC.Y = PosDitoEC.Y - (HLig * 2) 'Hauteur du Dito inséré
                 End If
                 
             Case 16 '"Remarks16"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 ExplodeDito mdraw, mDito
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 2) 'Hauteur du Dito inséré
                 
             Case 17 '"Remarks17"
                 Nremark = Nremark + 1
-                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                 ExplodeDito mdraw, mDito
-                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                 PosDitoEC.Y = PosDitoEC.Y - (HLig * 2) 'Hauteur du Dito inséré
                 
             Case 18 '"Remarks18"
                 If mVT And mTronq Then
                     Nremark = Nremark + 1
-                    mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cPt), CStr(Nremark))
+                    mDito = InstanceDito(mDitoSources, mDitoCibles, PosDitoEC, CStr(cpt), CStr(Nremark))
                     ExplodeDito mdraw, mDito
-                    AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cPt)
-                    Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cPt)
+                    AssociatText TxtInstancie, mVueCible.Texts.GetItem("TxtRemk" & cpt)
+                    Set TxtInstancie = mVueCible.Texts.GetItem("TxtRemk" & cpt)
                     PosDitoEC.Y = PosDitoEC.Y - (HLig * 3) 'Hauteur du Dito inséré
                 End If
             
         End Select
-    Next cPt
+    Next cpt
     
 nVueMAin.Activate
 End Sub
@@ -672,7 +668,7 @@ Dim DrawingSel As Selection
         DrawingSel.Delete
 End Sub
 
-Private Function InstanceDito(mDitoSources, mDitoCibles, pos As Pos2D, cPt As String, No As String) As Dito
+Private Function InstanceDito(mDitoSources, mDitoCibles, pos As Pos2D, cpt As String, No As String) As Dito
 'Instancie le Dito passé en argument
 'mDitoSources = collection des Dito sources du plan
 'mDitoCibles = collection des Dito instanciés
@@ -682,7 +678,7 @@ Dim mDito As Dito
 Dim TxtDito
 Dim nDito As String 'Nom d'identification du Dito dans le plan template
 
-nDito = "Remarks" & cPt
+nDito = "Remarks" & cpt
     Set mDito.Source = mDitoSources.Item(nDito)
     Set mDito.Cible = mDitoCibles.Add(mDito.Source, pos.X, pos.Y)
     
