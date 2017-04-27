@@ -575,217 +575,228 @@ Exit_CATMain:
     
 End Sub
 
-Public Sub ExportPt(EP_ListPts, EP_Worksheet, EP_NameConteneur As String, EP_AxeSym As String, mBar)
+Public Sub ExportPt(ListPts, EP_Worksheet, NameConteneur As String, AxeSym As String, mBar)
 'Export des points (A ou B ou autre en fonction du conteneur) vers le fichier de controle excel
 'Inversion du signe pour la valeur symétrique si elle est différente de X, Y ou Z
-' EP_ListPts(3,x) = tableau de la liste des points
+' ListPts(3,x) = tableau de la liste des points
 ' EP_Worksheet =  feuille du fichier excel dans laquelle ecrire les coordonnées
-' EP_NameConteneur = nom du set géométrique contenant les points
-' EP_AxeSym = axe de symétrie
+' NameConteneur = nom du set géométrique contenant les points
+' AxeSym = axe de symétrie
 ' mBar = objet "barre de progression"
 
-Dim EP_Counter As Long
+Dim counter As Long
+Dim Formule As String
 
-'Pas de point dans le set géométrique
-On Error Resume Next
-EP_Counter = UBound(EP_ListPts, 2)
-    If (Err.Number <> 0) Then
-    ' tableau vide
-        Err.Clear
-        Exit Sub
-    End If
-
-EP_Counter = 0
-noEtape = 1: noItem = 1: nbItems = 100: StrTitre = " Création de l'export excel, veuillez patienter."
-While (EP_Counter <= UBound(EP_ListPts, 2))
-
-    mBar.CalculProgression noEtape, nbEtapes, EP_Counter, EP_Counter + 1, " Export des points : " & EP_NameConteneur
-
-    'Nom du point
-    If Frm_Extract.Rbt_Num3D Then
-        EP_Worksheet.range("A" & EP_Counter + 2) = EP_ListPts(0, EP_Counter)
-    Else
-        EP_Worksheet.range("A" & EP_Counter + 2) = "A" & EP_Counter
-    End If
+    'Pas de point dans le set géométrique
+    On Error Resume Next
+    counter = UBound(ListPts, 2)
+        If (Err.Number <> 0) Then
+        ' tableau vide
+            Err.Clear
+            Exit Sub
+        End If
     
-    'Coordonnée des points
-    If EP_AxeSym = "X" Then
-        EP_Worksheet.range("B" & EP_Counter + 2) = -Round(EP_ListPts(1, EP_Counter), 3)
-    Else
-        EP_Worksheet.range("B" & EP_Counter + 2) = Round(EP_ListPts(1, EP_Counter), 3)
-    End If
-    EP_Worksheet.Columns("B").AutoFit
-    If EP_AxeSym = "Y" Then
-        EP_Worksheet.range("C" & EP_Counter + 2) = -Round(EP_ListPts(2, EP_Counter), 3)
-    Else
-        EP_Worksheet.range("C" & EP_Counter + 2) = Round(EP_ListPts(2, EP_Counter), 3)
-    End If
-    EP_Worksheet.Columns("C").AutoFit
-    If EP_AxeSym = "Z" Then
-        EP_Worksheet.range("D" & EP_Counter + 2) = -Round(EP_ListPts(3, EP_Counter), 3)
-    Else
-        EP_Worksheet.range("D" & EP_Counter + 2) = Round(EP_ListPts(3, EP_Counter), 3)
-    End If
-    EP_Worksheet.Columns("D").AutoFit
+    counter = 0
+    noEtape = 1: noItem = 1: nbItems = 100: StrTitre = " Création de l'export excel, veuillez patienter."
+    While (counter <= UBound(ListPts, 2))
     
-    Dim EP_Formule As String
-    EP_Formule = "=RACINE((B" & Trim(str(EP_Counter + 2)) & "- E" & Trim(str(EP_Counter + 2)) & ")^ 2 + (C" & Trim(str(EP_Counter + 2)) & " - F" & Trim(str(EP_Counter + 2)) & ") ^ 2 + (D" & Trim(str(EP_Counter + 2)) & " - G" & Trim(str(EP_Counter + 2)) & ") ^ 2)"
-    EP_Worksheet.range("H" & EP_Counter + 2).formulalocal = EP_Formule
-           
-    EP_Counter = EP_Counter + 1
-Wend
+        mBar.CalculProgression noEtape, nbEtapes, counter, counter + 1, " Export des points : " & NameConteneur
+    
+        'Nom du point
+        If Frm_Extract.Rbt_Num3D Then
+            EP_Worksheet.range("A" & counter + 2) = ListPts(0, counter)
+        Else
+            EP_Worksheet.range("A" & counter + 2) = "A" & counter
+        End If
+        
+        'Coordonnée des points
+        If AxeSym = "X" Then
+            EP_Worksheet.range("B" & counter + 2) = -Round(ListPts(1, counter), 3)
+        Else
+            EP_Worksheet.range("B" & counter + 2) = Round(ListPts(1, counter), 3)
+        End If
+        EP_Worksheet.Columns("B").AutoFit
+        If AxeSym = "Y" Then
+            EP_Worksheet.range("C" & counter + 2) = -Round(ListPts(2, counter), 3)
+        Else
+            EP_Worksheet.range("C" & counter + 2) = Round(ListPts(2, counter), 3)
+        End If
+        EP_Worksheet.Columns("C").AutoFit
+        If AxeSym = "Z" Then
+            EP_Worksheet.range("D" & counter + 2) = -Round(ListPts(3, counter), 3)
+        Else
+            EP_Worksheet.range("D" & counter + 2) = Round(ListPts(3, counter), 3)
+        End If
+        EP_Worksheet.Columns("D").AutoFit
+        
+        Formule = "=RACINE((B" & Trim(str(counter + 2)) & "- E" & Trim(str(counter + 2)) & ")^ 2 + (C" & Trim(str(counter + 2)) & " - F" & Trim(str(counter + 2)) & ") ^ 2 + (D" & Trim(str(counter + 2)) & " - G" & Trim(str(counter + 2)) & ") ^ 2)"
+        EP_Worksheet.range("H" & counter + 2).formulalocal = Formule
+               
+        counter = counter + 1
+    Wend
 
-'Mise en forme conditionnelle. Si l'écart est suppérieur à 0.2, le texte passe en rouge
-With EP_Worksheet.range("H2:H" & EP_Counter + 2)
-    .formatconditions.Delete
-    .formatconditions.Add xLCellValue, xLGreater, "0,2"
-    .formatconditions(1).Font.colorindex = 3
-End With
+    'Mise en forme conditionnelle. Si l'écart est suppérieur à 0.2, le texte passe en rouge
+    With EP_Worksheet.range("H2:H" & counter + 2)
+        .formatconditions.Delete
+        .formatconditions.Add xLCellValue, xLGreater, "0,2"
+        .formatconditions(1).Font.colorindex = 3
+    End With
 
-'Coloriage des cellules en vert et jaune
-EP_Counter = UBound(EP_ListPts, 2) + 1
-CouleurCell EP_Worksheet, "B2", "D" & EP_Counter + 1, "vert"
-CouleurCell EP_Worksheet, "E2", "G" & EP_Counter + 1, "jaune"
-If EP_NameConteneur = nHBFeet Then
-    CouleurCell EP_Worksheet, "I2", "I" & EP_Counter + 1, "jaune"
+    'Coloriage des cellules en vert et jaune
+    counter = UBound(ListPts, 2) + 1
+    CouleurCell EP_Worksheet, "B2", "D" & counter + 1, "vert"
+    CouleurCell EP_Worksheet, "E2", "G" & counter + 1, "jaune"
+    If NameConteneur = nHBFeet Then
+        CouleurCell EP_Worksheet, "I2", "I" & counter + 1, "jaune"
 End If
 End Sub
 
-Public Function RecupListPtCoord(RLPC_PartDoc As Document, RLPC_NameConteneur) As String()
+Public Function RecupListPtCoord(oPartDoc As Document, NameConteneur) As String()
 'Récupère dans un tableau les Coordonnées X, Y et Z des points du Part
 'En récupérant les coordonnées Par rapport à l'origine de la part.
-    Dim RLPC_TableauPt() As String
+    Dim TableauPt() As String
+    Dim mPartGrille As c_PartGrille
+    Dim mCoord(2)
+    Dim oMeas
+    Dim oSPAworkbench As SPAWorkbench
+    Dim Hshapes As HybridShapes
+    Dim counter As Integer
+    Dim CurPtShape As HybridShape
+    Dim HBodyPts As HybridBody
+    
+    'Initialisation des classes
+    Set mPartGrille = New c_PartGrille
+    mPartGrille.PG_partDocGrille = oPartDoc
+    
+    Set oSPAworkbench = mPartGrille.partDocGrille.GetWorkbench("SPAWorkbench")
 
-    Dim RLPC_PartGrille As New c_PartGrille
-    RLPC_PartGrille.PG_partDocGrille = RLPC_PartDoc
-    
-    Dim RLPC_SPAworkbench As SPAWorkbench
-    Set RLPC_SPAworkbench = RLPC_PartGrille.partDocGrille.GetWorkbench("SPAWorkbench")
-    
-    Dim RLPC_Coord(2)
-    Dim RLPC_Measurable
-    
-    Dim RLPC_HybridBody As HybridBody
-    If RLPC_PartGrille.Exist_HB(RLPC_NameConteneur) Then
-        Set RLPC_HybridBody = RLPC_PartGrille.Hbodies.Item(RLPC_NameConteneur)
+    'test l'existence des sets géométrique
+    If mPartGrille.Exist_HB(NameConteneur) Then
+        Set HBodyPts = mPartGrille.Hbodies.Item(NameConteneur)
     Else
-        MsgBox "Le set Géométrique : " & (RLPC_NameConteneur) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
+        MsgBox "Le set Géométrique : " & (NameConteneur) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
         End
     End If
 
-Dim RLPC_Shapes As HybridShapes
-Set RLPC_Shapes = RLPC_HybridBody.HybridShapes
-If RLPC_Shapes.Count = 0 Then
-    Exit Function
-End If
-Dim RLPC_counter As Integer
-RLPC_counter = 1
-Dim RLPC_CurPtShape As HybridShape
-
-For RLPC_counter = 1 To RLPC_Shapes.Count
-    ReDim Preserve RLPC_TableauPt(3, RLPC_counter - 1)
-    Set RLPC_CurPtShape = RLPC_Shapes.Item(RLPC_counter)
+    Set Hshapes = HBodyPts.HybridShapes
+    If Hshapes.Count = 0 Then
+        Exit Function
+    End If
     
-    RLPC_TableauPt(0, RLPC_counter - 1) = RLPC_CurPtShape.Name
-    Set RLPC_Measurable = RLPC_SPAworkbench.GetMeasurable(RLPC_CurPtShape)
-    RLPC_Measurable.GetPoint RLPC_Coord
+    counter = 1
     
-    RLPC_TableauPt(1, RLPC_counter - 1) = Round(RLPC_Coord(0), 3)
-    RLPC_TableauPt(2, RLPC_counter - 1) = Round(RLPC_Coord(1), 3)
-    RLPC_TableauPt(3, RLPC_counter - 1) = Round(RLPC_Coord(2), 3)
-           
-Next RLPC_counter
-
-RecupListPtCoord = RLPC_TableauPt
+    For counter = 1 To Hshapes.Count
+        ReDim Preserve TableauPt(3, counter - 1)
+        Set CurPtShape = Hshapes.Item(counter)
+        
+        TableauPt(0, counter - 1) = CurPtShape.Name
+        Set oMeas = oSPAworkbench.GetMeasurable(CurPtShape)
+        oMeas.GetPoint mCoord
+        
+        TableauPt(1, counter - 1) = Round(mCoord(0), 3)
+        TableauPt(2, counter - 1) = Round(mCoord(1), 3)
+        TableauPt(3, counter - 1) = Round(mCoord(2), 3)
+               
+    Next counter
+    
+    RecupListPtCoord = TableauPt
 End Function
 
-Public Function RecupListPtMesure(RLPM_PartDoc As Document, RLPM_NameConteneur) As String()
+Public Function RecupListPtMesure(oPartDoc As Document, NameConteneur) As String()
 'Récupère dans un tableu les Coordonnées X, Y et Z des points du Part
 'En mesurant la distance mini entre le point et les plans PlanX0, PlanY0 et PlanZ0
-    Dim RLPM_TableauPt() As String
-    Dim RLPM_TableauPtTem(5) As Double
-    Dim RLPM_HSPlanX As HybridShape, RLPM_HSPlanY As HybridShape, RLPM_HSPlanZ As HybridShape
-    Dim RLPM_HSPlanX10 As HybridShape, RLPM_HSPlanY10 As HybridShape, RLPM_HSPlanZ10 As HybridShape
-    Dim RLPM_SPAworkbench As SPAWorkbench
-    Dim RLPM_XMeas, RLPM_YMeas As Measurable, RLPM_ZMeas As Measurable
-    Dim RLPM_X10Meas As Measurable, RLPM_Y10Meas As Measurable, RLPM_Z10Meas As Measurable
-    Dim RLPM_HBodyPts As HybridBody
-    Dim RLPM_HbodyPlans As HybridBody
-    Dim RLPM_counter As Long
+'Afin de calculer le sens positif ou negatif de l'axe on crée des plans décalées de "0.01" par rapport aux plans X0, Y0 et Z0
+'Si la distance du pt  / au plan X0 est supérieure à la distance du pt / au plan X001 cela indique un sens positif
+
+    Dim TableauPt() As String
+    Dim TableauPtTem(5) As Double
+    Dim HSPlanX As HybridShape, HSPlanY As HybridShape, HSPlanZ As HybridShape
+    Dim HSPlanX10 As HybridShape, HSPlanY10 As HybridShape, HSPlanZ10 As HybridShape
+    Dim oSPAworkbench As SPAWorkbench
+    Dim XMeas, YMeas As Measurable, ZMeas As Measurable
+    Dim X10Meas As Measurable, Y10Meas As Measurable, Z10Meas As Measurable
+    Dim HBodyPts As HybridBody
+    Dim HbodyPlans As HybridBody
+    Dim counter As Long
+    Dim mPartGrille As c_PartGrille
+    Dim Hshapes As HybridShapes
+    Dim CurPtShape As HybridShape
     
-    Dim RLPM_PartGrille As New c_PartGrille
-    RLPM_PartGrille.PG_partDocGrille = RLPM_PartDoc
+    'Initialisation des classes
+    Set mPartGrille = New c_PartGrille
+    mPartGrille.PG_partDocGrille = oPartDoc
     
-    Set RLPM_SPAworkbench = RLPM_PartGrille.GrilleSPAWorkbench
+    Set oSPAworkbench = mPartGrille.GrilleSPAWorkbench
     
     'test l'existence des sets géométrique
-    If RLPM_PartGrille.Exist_HB(RLPM_NameConteneur) Then
-        Set RLPM_HBodyPts = RLPM_PartGrille.Hbodies.Item(RLPM_NameConteneur)
+    If mPartGrille.Exist_HB(NameConteneur) Then
+        Set HBodyPts = mPartGrille.Hbodies.Item(NameConteneur)
     Else
-        MsgBox "Le set Géométrique : " & (RLPM_NameConteneur) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
+        MsgBox "Le set Géométrique : " & (NameConteneur) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
         End
     End If
-    If RLPM_PartGrille.Exist_HB(nHBTrav) Then
-        Set RLPM_HbodyPlans = RLPM_PartGrille.Hb(nHBTrav)
+    If mPartGrille.Exist_HB(nHBTrav) Then
+        Set HbodyPlans = mPartGrille.Hb(nHBTrav)
     Else
-        MsgBox "Le set Géométrique : " & (RLPM_NameConteneur) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
+        MsgBox "Le set Géométrique : " & (NameConteneur) & " est manquant ou mal orthograpié.", vbCritical, "Eléments manquant"
         End
     End If
  
- 
-Dim RLPM_Shapes As HybridShapes
-Set RLPM_Shapes = RLPM_HBodyPts.HybridShapes
-If RLPM_Shapes.Count = 0 Then
-    RecupListPtMesure = RLPM_TableauPt()
-    Exit Function
-End If
-
-On Error Resume Next
-Set RLPM_HSPlanX = RLPM_HbodyPlans.HybridShapes.Item("PlanX0")
-Set RLPM_HSPlanY = RLPM_HbodyPlans.HybridShapes.Item("PlanY0")
-Set RLPM_HSPlanZ = RLPM_HbodyPlans.HybridShapes.Item("PlanZ0")
-Set RLPM_HSPlanX10 = RLPM_HbodyPlans.HybridShapes.Item("PlanX10")
-Set RLPM_HSPlanY10 = RLPM_HbodyPlans.HybridShapes.Item("PlanY10")
-Set RLPM_HSPlanZ10 = RLPM_HbodyPlans.HybridShapes.Item("PlanZ10")
-If (Err.Number <> 0) Then
-    ' Un des plans est manquant
-        Err.Clear
-        MsgBox "Un des plans de référence est manquant ! re-sélectionnez le repère de référence.", vbCritical, "Plans de ref manquants"
-        End
+    Set Hshapes = HBodyPts.HybridShapes
+    If Hshapes.Count = 0 Then
+        RecupListPtMesure = TableauPt()
+        Exit Function
     End If
-On Error GoTo 0
-
-Set RLPM_XMeas = RLPM_SPAworkbench.GetMeasurable(RLPM_HSPlanX)
-Set RLPM_X10Meas = RLPM_SPAworkbench.GetMeasurable(RLPM_HSPlanX10)
-Set RLPM_YMeas = RLPM_SPAworkbench.GetMeasurable(RLPM_HSPlanY)
-Set RLPM_Y10Meas = RLPM_SPAworkbench.GetMeasurable(RLPM_HSPlanY10)
-Set RLPM_ZMeas = RLPM_SPAworkbench.GetMeasurable(RLPM_HSPlanZ)
-Set RLPM_Z10Meas = RLPM_SPAworkbench.GetMeasurable(RLPM_HSPlanZ10)
-
-RLPM_counter = 1
-Dim RLPM_CurPtShape As HybridShape
-
-For RLPM_counter = 1 To RLPM_Shapes.Count
-    Set RLPM_CurPtShape = RLPM_Shapes.Item(RLPM_counter)
     
-    RLPM_TableauPtTem(0) = RLPM_XMeas.GetMinimumDistance(RLPM_CurPtShape)
-    RLPM_TableauPtTem(1) = RLPM_YMeas.GetMinimumDistance(RLPM_CurPtShape)
-    RLPM_TableauPtTem(2) = RLPM_ZMeas.GetMinimumDistance(RLPM_CurPtShape)
-    RLPM_TableauPtTem(3) = RLPM_X10Meas.GetMinimumDistance(RLPM_CurPtShape)
-    RLPM_TableauPtTem(4) = RLPM_Y10Meas.GetMinimumDistance(RLPM_CurPtShape)
-    RLPM_TableauPtTem(5) = RLPM_Z10Meas.GetMinimumDistance(RLPM_CurPtShape)
+    On Error Resume Next
+    Set HSPlanX = HbodyPlans.HybridShapes.Item("PlanX0")
+    Set HSPlanY = HbodyPlans.HybridShapes.Item("PlanY0")
+    Set HSPlanZ = HbodyPlans.HybridShapes.Item("PlanZ0")
+    Set HSPlanX10 = HbodyPlans.HybridShapes.Item("PlanX10")
+    Set HSPlanY10 = HbodyPlans.HybridShapes.Item("PlanY10")
+    Set HSPlanZ10 = HbodyPlans.HybridShapes.Item("PlanZ10")
+    If (Err.Number <> 0) Then
+        ' Un des plans est manquant
+            Err.Clear
+            MsgBox "Un des plans de référence est manquant ! re-sélectionnez le repère de référence.", vbCritical, "Plans de ref manquants"
+            End
+        End If
+    On Error GoTo 0
     
-    ReDim Preserve RLPM_TableauPt(3, RLPM_counter - 1)
+    Set XMeas = oSPAworkbench.GetMeasurable(HSPlanX)
+    Set X10Meas = oSPAworkbench.GetMeasurable(HSPlanX10)
+    Set YMeas = oSPAworkbench.GetMeasurable(HSPlanY)
+    Set Y10Meas = oSPAworkbench.GetMeasurable(HSPlanY10)
+    Set ZMeas = oSPAworkbench.GetMeasurable(HSPlanZ)
+    Set Z10Meas = oSPAworkbench.GetMeasurable(HSPlanZ10)
+    
+    counter = 1
 
-    If IsUpdatable(RLPM_PartGrille.PartGrille, RLPM_CurPtShape) Then
-        RLPM_TableauPt(0, RLPM_counter - 1) = RLPM_CurPtShape.Name
-        RLPM_TableauPt(1, RLPM_counter - 1) = SignePlusMoins(RLPM_TableauPtTem(0), RLPM_TableauPtTem(3)) * RLPM_TableauPtTem(0)
-        RLPM_TableauPt(2, RLPM_counter - 1) = SignePlusMoins(RLPM_TableauPtTem(1), RLPM_TableauPtTem(4)) * RLPM_TableauPtTem(1)
-        RLPM_TableauPt(3, RLPM_counter - 1) = SignePlusMoins(RLPM_TableauPtTem(2), RLPM_TableauPtTem(5)) * RLPM_TableauPtTem(2)
-    End If
-Next RLPM_counter
+    For counter = 1 To Hshapes.Count
+        Set CurPtShape = Hshapes.Item(counter)
+        'Mesure la distance du pt / aux plans
+        TableauPtTem(0) = XMeas.GetMinimumDistance(CurPtShape)
+        TableauPtTem(1) = YMeas.GetMinimumDistance(CurPtShape)
+        TableauPtTem(2) = ZMeas.GetMinimumDistance(CurPtShape)
+        TableauPtTem(3) = X10Meas.GetMinimumDistance(CurPtShape)
+        TableauPtTem(4) = Y10Meas.GetMinimumDistance(CurPtShape)
+        TableauPtTem(5) = Z10Meas.GetMinimumDistance(CurPtShape)
+        
+        ReDim Preserve TableauPt(3, counter - 1)
+        
+        'Vérification du signe (+/-)
+        If IsUpdatable(mPartGrille.PartGrille, CurPtShape) Then
+            TableauPt(0, counter - 1) = CurPtShape.Name
+            TableauPt(1, counter - 1) = SignePlusMoins(TableauPtTem(0), TableauPtTem(3)) * TableauPtTem(0)
+            TableauPt(2, counter - 1) = SignePlusMoins(TableauPtTem(1), TableauPtTem(4)) * TableauPtTem(1)
+            TableauPt(3, counter - 1) = SignePlusMoins(TableauPtTem(2), TableauPtTem(5)) * TableauPtTem(2)
+        End If
+    Next counter
+    
+RecupListPtMesure = TableauPt()
 
-RecupListPtMesure = RLPM_TableauPt()
+    'Libération des classes
+    Set mPartGrille = Nothing
 End Function
 
 Public Sub ExportAngle(EA_HybridBodyA, EA_Worksheet, EA_Cote As String, mBar)
