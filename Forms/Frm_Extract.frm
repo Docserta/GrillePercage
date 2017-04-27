@@ -32,19 +32,32 @@ Me.Hide
 Set coll_docs = CATIA.Documents
 Dim MonPartdoc As PartDocument
 Dim NomPartGrille As String
-If Rbt_GrilleG Or Rbt_GrilleSG Then
-    NomPartGrille = Me.TBX_NomGriNueG & ".CATPart"
-ElseIf Rbt_GrilleD Or Rbt_GrilleSD Then
-    NomPartGrille = Me.TBX_NomGriNueD & ".CATPart"
-End If
+Dim mPartGrille As c_PartGrille
+Dim MaSelection, InputObjectType, GeoSetSel
+Dim SelAxis
+Dim mHSFactory As HybridShapeFactory
+Dim MonAxisSystem As AxisSystem
+Dim MonAxisSystemName As String
+Dim MonHBody As HybridBody
+Dim MesHShape As HybridShapes
+Dim StrRef As String
+Dim RefTriedrePlan As Reference
+Dim HSPlan, HSPlan10 As HybridShapePlaneOffset
+Dim HSPlanName, HSPlan10Name As String
+    
+    If Rbt_GrilleG Or Rbt_GrilleSG Then
+        NomPartGrille = Me.TBX_NomGriNueG & ".CATPart"
+    ElseIf Rbt_GrilleD Or Rbt_GrilleSD Then
+        NomPartGrille = Me.TBX_NomGriNueD & ".CATPart"
+    End If
 
-Dim MonPartGrille As New c_PartGrille
-MonPartGrille.PG_partDocGrille = coll_docs.Item(CStr(NomPartGrille))
-Set MonPartdoc = MonPartGrille.partDocGrille
+    'Initialisation des classes
+    Set mPartGrille = New c_PartGrille
 
-    Dim MaSelection, InputObjectType, GeoSetSel
+    mPartGrille.PG_partDocGrille = coll_docs.Item(CStr(NomPartGrille))
+    Set MonPartdoc = mPartGrille.partDocGrille
+
     Set MaSelection = MonPartdoc.Selection
-    Dim SelAxis
     MaSelection.Clear
     ReDim InputObjectType(0)
     InputObjectType(0) = "AxisSystem"
@@ -53,80 +66,70 @@ Set MonPartdoc = MonPartGrille.partDocGrille
         Set SelAxis = MonPartdoc.Selection.Item(1).Value
     End If
 
-Dim MonHSFactory As HybridShapeFactory
-Set MonHSFactory = MonPartGrille.HShapeFactory
+    Set mHSFactory = mPartGrille.HShapeFactory
+    Set MonAxisSystem = SelAxis
+    MonAxisSystemName = MonAxisSystem.Name
 
-Dim MonAxisSystem As AxisSystem
-Set MonAxisSystem = SelAxis
-
-Dim MonAxisSystemName As String
-MonAxisSystemName = MonAxisSystem.Name
-
-Dim MonHBody As HybridBody
-If Not (MonPartGrille.Exist_HB(nHBTrav)) Then
-    MonPartGrille.Create_HyBridShape (nHBTrav)
-End If
-Set MonHBody = MonPartGrille.Hb(nHBTrav)
-Dim MesHShape As HybridShapes
-Set MesHShape = MonHBody.HybridShapes
-
-Dim StrRef As String
-Dim RefTriedrePlan As Reference
-Dim HSPlan, HSPlan10 As HybridShapePlaneOffset
-'Détection de la présence des plan de ref et suppression le cas échéant
-For i = 1 To 3
-    Dim HSPlanName, HSPlan10Name As String
-    Select Case i
-    Case 1
-        HSPlanName = "PlanX0"
-        HSPlan10Name = "PlanX10"
-    Case 2
-        HSPlanName = "PlanY0"
-        HSPlan10Name = "PlanY10"
-    Case 3
-        HSPlanName = "PlanZ0"
-        HSPlan10Name = "PlanZ10"
-    End Select
-    On Error Resume Next
-    Set HSPlan = MesHShape.Item(CStr(HSPlanName))
-    If (Err.Number <> 0) Then
-        ' "Plan_0" n'existe pas
-        Err.Clear
-    Else
-        MonHSFactory.DeleteObjectForDatum HSPlan
+    'Création du set géometrique "travail" s'il n'existe pas
+    If Not (mPartGrille.Exist_HB(nHBTrav)) Then
+        mPartGrille.Create_HyBridShape (nHBTrav)
     End If
-        Set HSPlan10 = MesHShape.Item(CStr(HSPlan10Name))
-    If (Err.Number <> 0) Then
-        ' "Plan_0" n'existe pas
-        Err.Clear
-    Else
-        MonHSFactory.DeleteObjectForDatum HSPlan10
-    End If
-Next i
+    Set MonHBody = mPartGrille.Hb(nHBTrav)
+    Set MesHShape = MonHBody.HybridShapes
 
-For i = 1 To 3
-    StrRef = "RSur:(Face:(Brp:(" & MonAxisSystemName & ";" & i & ");None:();Cf11:());WithPermanentBody;WithoutBuildError;WithSelectingFeatureSupport;MFBRepVersion_CXR15)"
-    Set RefTriedrePlan = MonPartGrille.PartGrille.CreateReferenceFromBRepName(CStr(StrRef), MonAxisSystem)
-    Set HSPlan = MonHSFactory.AddNewPlaneOffset(RefTriedrePlan, 0#, False)
-    Set HSPlan10 = MonHSFactory.AddNewPlaneOffset(RefTriedrePlan, 10#, False)
-    MonHBody.AppendHybridShape HSPlan
-    MonHBody.AppendHybridShape HSPlan10
-    Select Case i
-    Case 1
-        HSPlan.Name = "PlanZ0"
-        HSPlan10.Name = "PlanZ10"
-    Case 2
-        HSPlan.Name = "PlanX0"
-        HSPlan10.Name = "PlanX10"
-    Case 3
-        HSPlan.Name = "PlanY0"
-        HSPlan10.Name = "PlanY10"
-    End Select
-Next i
-MonPartGrille.PartGrille.Update
-Me.TB_AxisRef = MonAxisSystemName
+    'Détection de la présence des plan de ref et suppression le cas échéant
+    For i = 1 To 3
+        Select Case i
+        Case 1
+            HSPlanName = "PlanX0"
+            HSPlan10Name = "PlanX10"
+        Case 2
+            HSPlanName = "PlanY0"
+            HSPlan10Name = "PlanY10"
+        Case 3
+            HSPlanName = "PlanZ0"
+            HSPlan10Name = "PlanZ10"
+        End Select
+        On Error Resume Next
+        Set HSPlan = MesHShape.Item(CStr(HSPlanName))
+        If (Err.Number <> 0) Then
+            ' "Plan_0" n'existe pas
+            Err.Clear
+        Else
+            mHSFactory.DeleteObjectForDatum HSPlan
+        End If
+            Set HSPlan10 = MesHShape.Item(CStr(HSPlan10Name))
+        If (Err.Number <> 0) Then
+            ' "Plan_10" n'existe pas
+            Err.Clear
+        Else
+            mHSFactory.DeleteObjectForDatum HSPlan10
+        End If
+    Next i
 
-Me.Show
+    For i = 1 To 3
+        StrRef = "RSur:(Face:(Brp:(" & MonAxisSystemName & ";" & i & ");None:();Cf11:());WithPermanentBody;WithoutBuildError;WithSelectingFeatureSupport;MFBRepVersion_CXR15)"
+        Set RefTriedrePlan = mPartGrille.PartGrille.CreateReferenceFromBRepName(CStr(StrRef), MonAxisSystem)
+        Set HSPlan = mHSFactory.AddNewPlaneOffset(RefTriedrePlan, 0#, False)
+        Set HSPlan10 = mHSFactory.AddNewPlaneOffset(RefTriedrePlan, 0.01, False)
+        MonHBody.AppendHybridShape HSPlan
+        MonHBody.AppendHybridShape HSPlan10
+        Select Case i
+        Case 1
+            HSPlan.Name = "PlanZ0"
+            HSPlan10.Name = "PlanZ10"
+        Case 2
+            HSPlan.Name = "PlanX0"
+            HSPlan10.Name = "PlanX10"
+        Case 3
+            HSPlan.Name = "PlanY0"
+            HSPlan10.Name = "PlanY10"
+        End Select
+    Next i
+    mPartGrille.PartGrille.Update
+    Me.TB_AxisRef = MonAxisSystemName
+    
+    Me.Show
 End Sub
 
 Private Sub Btn_Fic_Excel_Click()
@@ -185,8 +188,8 @@ BSGD_nomPart = Select_PartGrille(1)
 
 Frm_Extract.TBX_NomGriNueD = BSGD_nomPart
 'Active la zone de sélection de l'Axis
-Me.TB_AxisRef.enabled = True
-Me.Btn_SelAxis.enabled = True
+Me.TB_AxisRef.Enabled = True
+Me.Btn_SelAxis.Enabled = True
 Frm_Extract.Show
 End Sub
 
@@ -199,8 +202,8 @@ BSGG_nomPart = Select_PartGrille(1)
 
 Frm_Extract.TBX_NomGriNueG = BSGG_nomPart
 'Active la zone de sélection de l'Axis
-Me.TB_AxisRef.enabled = True
-Me.Btn_SelAxis.enabled = True
+Me.TB_AxisRef.Enabled = True
+Me.Btn_SelAxis.Enabled = True
 Frm_Extract.Show
 End Sub
 
@@ -248,31 +251,31 @@ Private Sub Cache_Tbx_Gri(CTG_GDS As Integer)
 ' 1 = Droite, 2 = Gauche, 3 = symétrique Droite, 4 = symétrique Gauche
 Select Case CTG_GDS
     Case 1
-        Me.Btn_SelGrilleD.enabled = True
-        Me.TBX_NomGriNueD.enabled = True
-        Me.Lbl_DGD.enabled = True
+        Me.Btn_SelGrilleD.Enabled = True
+        Me.TBX_NomGriNueD.Enabled = True
+        Me.Lbl_DGD.Enabled = True
 
-        Me.Btn_SelGrilleG.enabled = False
-        Me.TBX_NomGriNueG.enabled = False
-        Me.Lbl_DGG.enabled = False
+        Me.Btn_SelGrilleG.Enabled = False
+        Me.TBX_NomGriNueG.Enabled = False
+        Me.Lbl_DGG.Enabled = False
 
     Case 2
-        Me.Btn_SelGrilleD.enabled = False
-        Me.TBX_NomGriNueD.enabled = False
-        Me.Lbl_DGD.enabled = False
+        Me.Btn_SelGrilleD.Enabled = False
+        Me.TBX_NomGriNueD.Enabled = False
+        Me.Lbl_DGD.Enabled = False
 
-        Me.Btn_SelGrilleG.enabled = True
-        Me.TBX_NomGriNueG.enabled = True
-        Me.Lbl_DGG.enabled = True
+        Me.Btn_SelGrilleG.Enabled = True
+        Me.TBX_NomGriNueG.Enabled = True
+        Me.Lbl_DGG.Enabled = True
 
     Case 3 To 4
-        Me.Btn_SelGrilleD.enabled = True
-        Me.TBX_NomGriNueD.enabled = True
-        Me.Lbl_DGD.enabled = True
+        Me.Btn_SelGrilleD.Enabled = True
+        Me.TBX_NomGriNueD.Enabled = True
+        Me.Lbl_DGD.Enabled = True
         
-        Me.Btn_SelGrilleG.enabled = True
-        Me.TBX_NomGriNueG.enabled = True
-        Me.Lbl_DGG.enabled = True
+        Me.Btn_SelGrilleG.Enabled = True
+        Me.TBX_NomGriNueG.Enabled = True
+        Me.Lbl_DGG.Enabled = True
     
 End Select
 
@@ -284,15 +287,15 @@ Private Sub Cache_RB_Axe(CRB_Choix)
 ' 1 = Sym, 2 = non sym
 Select Case CRB_Choix
     Case 1
-        Me.Fr_Sym.enabled = True
-        Me.Rbt_X.enabled = True
-        Me.Rbt_Y.enabled = True
-        Me.Rbt_Z.enabled = True
+        Me.Fr_Sym.Enabled = True
+        Me.Rbt_X.Enabled = True
+        Me.Rbt_Y.Enabled = True
+        Me.Rbt_Z.Enabled = True
     Case 2
-        Me.Fr_Sym.enabled = False
-        Me.Rbt_X.enabled = False
-        Me.Rbt_Y.enabled = False
-        Me.Rbt_Z.enabled = False
+        Me.Fr_Sym.Enabled = False
+        Me.Rbt_X.Enabled = False
+        Me.Rbt_Y.Enabled = False
+        Me.Rbt_Z.Enabled = False
 End Select
 End Sub
 
@@ -317,9 +320,9 @@ Me.Rbt_GrilleG = True
 Me.Rbt_X = True
 Me.Rbt_Num3D = True
 Me.RBt_Fr = True
-Me.TB_AxisRef.enabled = False
-Me.Btn_SelAxis.enabled = False
-Me.Lbl_Axis.enabled = False
+Me.TB_AxisRef.Enabled = False
+Me.Btn_SelAxis.Enabled = False
+Me.Lbl_Axis.Enabled = False
 Me.Rbt_Dscgp2 = True
 Me.img_check.Visible = False
 Me.img_uncheck.Visible = True
@@ -333,9 +336,9 @@ End Sub
 Private Sub RAZAxis()
 'Désactive et remet a zéro le champs Axis de référence
 Me.TB_AxisRef = "Référence de la part"
-Me.TB_AxisRef.enabled = False
-Me.Lbl_Axis.enabled = False
-Me.Btn_SelAxis.enabled = False
+Me.TB_AxisRef.Enabled = False
+Me.Lbl_Axis.Enabled = False
+Me.Btn_SelAxis.Enabled = False
 
 End Sub
 
