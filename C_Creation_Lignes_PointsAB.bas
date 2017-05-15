@@ -466,8 +466,7 @@ Dim cpt As Long
         Set mPt = GrilleActive.GrilleSelection.Item(cpt).Value
     
         Set mHSNormale = mHSfact.AddNewLineNormal(HFSurf0, mPt, -210#, 110#, False)
-        mHSNormale.SetLengthType (1)
-        'mHSNormale.FirstUptoElem = HFSurf0
+        mHSNormale.SetLengthType (0)
         mHSNormale.Name = "Line." & NoSTD
         GrilleActive.Hb(nHBStd).AppendHybridShape mHSNormale
         GrilleActive.PartGrille.InWorkObject = mHSNormale
