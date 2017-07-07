@@ -38,7 +38,7 @@ Private i As Long
 ' Initialisation de l'objet
 '===========================
 
-Private Sub Class_Initialize()
+Private Sub Class_initialize()
 
     'On Error Resume Next
 

@@ -17,7 +17,7 @@ Option Explicit
 '*
 '**********************************************************************
 
-Sub catmain()
+Sub CATMain()
 
 'Log de l'utilisation de la macro
 LogUtilMacro nPath, nFicLog, nMacro, "E_CréationU01", VMacro

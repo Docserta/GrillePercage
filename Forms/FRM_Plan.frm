@@ -124,9 +124,9 @@ End Sub
 
 Private Sub RBt_VT_Change()
 If Me.RBt_VT Then
-    Me.ChB_Tronq.enabled = True
+    Me.ChB_Tronq.Enabled = True
 Else
-    Me.ChB_Tronq.enabled = False
+    Me.ChB_Tronq.Enabled = False
 End If
 End Sub
 
@@ -143,7 +143,7 @@ Private Sub UserForm_Initialize()
     Me.Rbt_Det = True
     Me.RBt_Horiz = True
     Me.RBt_CC = True
-    Me.ChB_Tronq.enabled = False
+    Me.ChB_Tronq.Enabled = False
     Me.CBx_Format.Value = "AIRBUS_FAL"
 End Sub
 

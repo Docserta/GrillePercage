@@ -131,29 +131,29 @@ End Sub
 
 Private Sub CB_Catpartactif_Click()
 If Me.CB_Catpartactif Then
-    Me.Cadre_ListeFic.enabled = False
-    Me.Btn_Parcourir.enabled = False
-    Me.Btn_ToutSel.enabled = False
-    Me.Btn_Trier.enabled = False
+    Me.Cadre_ListeFic.Enabled = False
+    Me.Btn_Parcourir.Enabled = False
+    Me.Btn_ToutSel.Enabled = False
+    Me.Btn_Trier.Enabled = False
     Me.ListBox1.Visible = False
 Else
-    Me.Cadre_ListeFic.enabled = True
-    Me.Btn_Parcourir.enabled = True
-    Me.Btn_ToutSel.enabled = True
-    Me.Btn_Trier.enabled = True
+    Me.Cadre_ListeFic.Enabled = True
+    Me.Btn_Parcourir.Enabled = True
+    Me.Btn_ToutSel.Enabled = True
+    Me.Btn_Trier.Enabled = True
     Me.ListBox1.Visible = True
 End If
 End Sub
 
 Private Sub ChB_Detromp_Click()
     If Me.ChB_Detromp Then
-        Me.LB_Detromp.enabled = True
-        Me.TBX_NomDtromp.enabled = True
+        Me.LB_Detromp.Enabled = True
+        Me.TBX_NomDtromp.Enabled = True
         Me.Btn_MajDetromp.Visible = True
         'Me.Btn_Nav_Detromp.Enabled = True
     Else
-        Me.LB_Detromp.enabled = False
-        Me.TBX_NomDtromp.enabled = False
+        Me.LB_Detromp.Enabled = False
+        Me.TBX_NomDtromp.Enabled = False
         Me.Btn_MajDetromp.Visible = False
         'Me.Btn_Nav_Detromp.Enabled = False
     End If
@@ -177,7 +177,7 @@ End Function
 Private Sub UserForm_Initialize()
 'Me.TBX_EnvAvion = "C:\CFR\Dropbox\Macros\Grilles-Percage\FichiersCAO\test\aile_avion.CATProduct"
 'Me.TBX_FicDest = "c:\temp"
-Me.LB_Detromp.enabled = False
-Me.TBX_NomDtromp.enabled = False
-Me.Btn_Nav_Detromp.enabled = False
+Me.LB_Detromp.Enabled = False
+Me.TBX_NomDtromp.Enabled = False
+Me.Btn_Nav_Detromp.Enabled = False
 End Sub

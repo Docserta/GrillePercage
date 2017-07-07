@@ -19,7 +19,7 @@ Option Explicit
 '*                Ajout sauvegarde en C:\temp si part non sauvegarde préalablement
 '*
 '**********************************************************************
-Sub catmain()
+Sub CATMain()
 
 'Log de l'utilisation de la macro
 LogUtilMacro nPath, nFicLog, nMacro, "E_generation_IGES", VMacro

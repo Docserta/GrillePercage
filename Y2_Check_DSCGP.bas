@@ -3,7 +3,7 @@ Option Explicit
 Public GrAss As New GrilleAss
 Public GrNue As New c_PartGrille
 
-Sub catmain()
+Sub CATMain()
 ' *****************************************************************
 '* Macro : Y1_Check_DSCGP
 '*

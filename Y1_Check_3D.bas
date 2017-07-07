@@ -18,7 +18,7 @@ Public WriteMesures As Boolean
 ' *
 ' *****************************************************************
 
-Sub catmain()
+Sub CATMain()
 
 Dim Doc_AssGen As ProductDocument
 Dim ProdAssGen As Product

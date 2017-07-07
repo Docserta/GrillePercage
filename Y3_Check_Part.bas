@@ -1,7 +1,7 @@
 Attribute VB_Name = "Y3_Check_Part"
 Option Explicit
 
-Sub catmain()
+Sub CATMain()
 ' *****************************************************************
 '* Macro : Y1_Check_Part
 '*

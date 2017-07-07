@@ -178,25 +178,25 @@ End Sub
 
 Private Sub ChB_Detromp_Change()
     If Me.ChB_Detromp Then
-        Me.LB_Detromp.enabled = True
-        Me.TBX_NomDtromp.enabled = True
-        Me.Btn_Nav_Detromp.enabled = True
+        Me.LB_Detromp.Enabled = True
+        Me.TBX_NomDtromp.Enabled = True
+        Me.Btn_Nav_Detromp.Enabled = True
     Else
-        Me.LB_Detromp.enabled = False
-        Me.TBX_NomDtromp.enabled = False
-        Me.Btn_Nav_Detromp.enabled = False
+        Me.LB_Detromp.Enabled = False
+        Me.TBX_NomDtromp.Enabled = False
+        Me.Btn_Nav_Detromp.Enabled = False
     End If
 End Sub
 
 Private Sub ChB_U01_Change()
     If Me.ChB_U01 Then
-        Me.Lb_U01.enabled = True
-        Me.TBX_NomU01.enabled = True
-        Me.TBX_NomU01Sym.enabled = True
+        Me.Lb_U01.Enabled = True
+        Me.TBX_NomU01.Enabled = True
+        Me.TBX_NomU01Sym.Enabled = True
     Else
-        Me.Lb_U01.enabled = False
-        Me.TBX_NomU01.enabled = False
-        Me.TBX_NomU01Sym.enabled = False
+        Me.Lb_U01.Enabled = False
+        Me.TBX_NomU01.Enabled = False
+        Me.TBX_NomU01Sym.Enabled = False
         'Me.TBX_NomU01 = ""
     End If
 End Sub
@@ -213,13 +213,13 @@ Private Sub UserForm_Initialize()
 'active le bouton "DSCGP" de type 2
 Me.Rbt_Dscgp2 = True
 Me.ChB_Detromp = False
-Me.LB_Detromp.enabled = False
-Me.TBX_NomDtromp.enabled = False
-Me.Btn_Nav_Detromp.enabled = False
+Me.LB_Detromp.Enabled = False
+Me.TBX_NomDtromp.Enabled = False
+Me.Btn_Nav_Detromp.Enabled = False
 Me.ChB_U01 = False
-Me.Lb_U01.enabled = False
-Me.TBX_NomU01Sym.enabled = False
-Me.TBX_NomU01.enabled = False
+Me.Lb_U01.Enabled = False
+Me.TBX_NomU01Sym.Enabled = False
+Me.TBX_NomU01.Enabled = False
 Me.img_check.Visible = False
 Me.img_uncheck.Visible = True
 End Sub

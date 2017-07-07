@@ -37,7 +37,7 @@ Public Sub Remove(vntIndexKey As Variant)
     mcol.Remove vntIndexKey
 End Sub
 
-Private Sub Class_Initialize()
+Private Sub Class_initialize()
     Set mcol = New Collection
 End Sub
 

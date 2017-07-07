@@ -32,18 +32,18 @@ End Sub
 
 Private Sub CB_Isol_Click()
     If CB_Isol.Value = True Then
-        Me.Frame_NomPt.enabled = False
+        Me.Frame_NomPt.Enabled = False
         FrameEnabled Me.Frame_NomPt, False
-        Me.Frm_Ordre.enabled = False
+        Me.Frm_Ordre.Enabled = False
         FrameEnabled Me.Frm_Ordre, False
-        Me.FrameIsole.enabled = True
+        Me.FrameIsole.Enabled = True
         FrameEnabled Me.FrameIsole, True
     Else
-        Me.Frame_NomPt.enabled = True
+        Me.Frame_NomPt.Enabled = True
         FrameEnabled Me.Frame_NomPt, True
-        Me.Frm_Ordre.enabled = True
+        Me.Frm_Ordre.Enabled = True
         FrameEnabled Me.Frm_Ordre, True
-        Me.FrameIsole.enabled = False
+        Me.FrameIsole.Enabled = False
         FrameEnabled Me.FrameIsole, False
     End If
 End Sub
@@ -61,7 +61,7 @@ Private Sub UserForm_Initialize()
 
 Me.RbtNumNomFast = True
 Me.Rbt_RefSTD = True
-Me.FrameIsole.enabled = False
+Me.FrameIsole.Enabled = False
 FrameEnabled Me.FrameIsole, False
 End Sub
 
@@ -69,6 +69,6 @@ Private Sub FrameEnabled(nFrame, statut)
 Dim FrmControl As Control
 
 For Each FrmControl In nFrame.Controls
-    FrmControl.enabled = statut
+    FrmControl.Enabled = statut
 Next
 End Sub

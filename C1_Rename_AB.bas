@@ -27,7 +27,7 @@ Option Explicit
 '* Modification : 19/01/17 CFR
 '*                Ajout renommage éléments isolés
 '**********************************************************************
-Sub catmain()
+Sub CATMain()
 
 'Log de l'utilisation de la macro
 LogUtilMacro nPath, nFicLog, nMacro, "C1_Rename_AB", VMacro
@@ -398,7 +398,7 @@ End Sub
 Private Sub RenomPtIsoles(GrilleActive, num)
 'Renomme les points sans historique dans le set pointsA, pointsB, feet et pinules
 Dim HBody As HybridBody
-Dim HShapes As HybridShapes
+Dim Hshapes As HybridShapes
 Dim HShape As HybridShape
 Dim i As Long
 Dim nSet As String, nPt As String
@@ -410,9 +410,9 @@ nPt = Choose(num, "A", "B", "F", "P")
     Set HBody = GrilleActive.Hb(nSet)
     On Error GoTo 0
     
-    Set HShapes = HBody.HybridShapes
-    For i = 1 To HShapes.Count
-        Set HShape = HShapes.Item(i)
+    Set Hshapes = HBody.HybridShapes
+    For i = 1 To Hshapes.Count
+        Set HShape = Hshapes.Item(i)
         HShape.Name = nPt & i
     Next i
     GoTo Fin

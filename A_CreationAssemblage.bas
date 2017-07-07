@@ -21,7 +21,7 @@ Option Explicit
 '*
 '**********************************************************************
 
-Sub catmain()
+Sub CATMain()
 
 'Log de l'utilisation de la macro
 LogUtilMacro nPath, nFicLog, nMacro, "A_CreationAssemblage", VMacro
@@ -139,7 +139,9 @@ Dim AssGenProds As Products
 Dim mParams As Parameters
 Dim ParamAdd As StrParam
 
-'Création du Product Assemblage
+    '---------------------------
+    'Initialisation des variables
+    '---------------------------
     Set coll_docs = CATIA.Documents
     Set nDocAss = coll_docs.Add("Product")
     Set ProdAssGen = nDocAss.Product
@@ -182,15 +184,18 @@ Public Sub Création_Noeud(AssGenProd As Product, Fich_env As String, Fich_Det As
 'Fich_env = Nom du fichier de l'environnement sous la forme "lecteur:\rep\nomfichier.ext"
 'Fic_Det = Nom du fichier de la part de détrompage sous la forme "nomfichier.ext"
     
-    Dim coll_prods As Products
-    Dim NoeudEnvProd As Product
-    Dim NoeudEnvProds As Products
-    Dim arrayofvariant(0)
-    Dim VNoeudEnvProds  As Variant
-    Dim Nom_Ass As String
-    Dim EnvProd As Product
-    Dim EnvAvion As Product
+Dim coll_prods As Products
+Dim NoeudEnvProd As Product
+Dim NoeudEnvProds As Products
+Dim arrayofvariant(0)
+Dim VNoeudEnvProds  As Variant
+Dim Nom_Ass As String
+Dim EnvProd As Product
+Dim EnvAvion As Product
     
+    '---------------------------
+    'Initialisation des variables
+    '---------------------------
     Set coll_prods = AssGenProd.Products
     Set NoeudEnvProd = coll_prods.AddNewProduct("env")
         NoeudEnvProd.Name = "env.1"

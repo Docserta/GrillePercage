@@ -449,7 +449,7 @@ Dim Formule_ProfLamageTrouNez As Formula
   
 End Sub
 
-Private Function PercageVisArretoir(GrilleActive, Coord_CentreTrou, PlanDeRef, Diam_Percage, Val_Taraudage, Prof_Trou, Prof_Taraud, NomTrou, PtCentre, Nom_Std, ParametresSTD, NB_Trou, mBar) As Hole
+Private Function PercageVisArretoir(GrilleActive, Coord_CentreTrou, PlanDeRef, Diam_Percage, Val_Taraudage, Prof_Trou, Prof_Taraud, NomTrou, PtCentre, Nom_STD, ParametresSTD, NB_Trou, mBar) As Hole
 'Création du trou de la vis arretoir
 'Coord_CentreTrou tableau des coordonnées du point TempPtAx
 'PlanDeRef plan de perçage TempPlanAx
@@ -547,7 +547,7 @@ GrilleActive.PartGrille.InWorkObject = GrilleActive.PartGrille.MainBody
     'Diamètre
         Set DiamTrouVisArretoir = TrouVisArretoir.HoleThreadDescription
         'DiamTrouVisArretoir.Value = Val_Taraudage
-        Set Formule_DiamVisArretoir = GrilleActive.GrilleRelations.CreateFormula("Formule_DiamVisArretoir", "", DiamTrouVisArretoir, "`std\" & Nom_Std & "\DiamVisArretoir` ")
+        Set Formule_DiamVisArretoir = GrilleActive.GrilleRelations.CreateFormula("Formule_DiamVisArretoir", "", DiamTrouVisArretoir, "`std\" & Nom_STD & "\DiamVisArretoir` ")
     'Profondeur perçage
         Set ProfVisArretoir = TrouVisArretoir.BottomLimit
         ProfVisArretoir.LimitMode = catOffsetLimit
@@ -605,7 +605,7 @@ GrilleActive.PartGrille.InWorkObject = GrilleActive.PartGrille.MainBody
         
         Set Valeur_DiamPosVisArretoir = DiamPosVisArretoir.Dimension
             'Valeur_DiamPosVisArretoir.Value = Diam_Percage
-        Set Formule_RayonPerVisArretoir = GrilleActive.GrilleRelations.CreateFormula("Formule_RayonPerVisArretoir", "", Valeur_DiamPosVisArretoir, "`std\" & Nom_Std & "\RayonPerVisArretoir`")
+        Set Formule_RayonPerVisArretoir = GrilleActive.GrilleRelations.CreateFormula("Formule_RayonPerVisArretoir", "", Valeur_DiamPosVisArretoir, "`std\" & Nom_STD & "\RayonPerVisArretoir`")
         
         Set Ref_PtCentreVisArretoir = GrilleActive.PartGrille.CreateReferenceFromObject(PtCentreVisArretoir)
         
@@ -633,10 +633,10 @@ GrilleActive.PartGrille.InWorkObject = GrilleActive.PartGrille.MainBody
         Set Valeur_AngleVisArretoir = AngleVisArretoir.Dimension
         
         If NB_Trou = 1 Then
-            Set Formule_AngleVisArretoir = GrilleActive.GrilleRelations.CreateFormula("Formule_AngleVisArretoir", "", Valeur_AngleVisArretoir, "`std\" & Nom_Std & "\AngleVisArretoir`")
+            Set Formule_AngleVisArretoir = GrilleActive.GrilleRelations.CreateFormula("Formule_AngleVisArretoir", "", Valeur_AngleVisArretoir, "`std\" & Nom_STD & "\AngleVisArretoir`")
         ElseIf NB_Trou = 2 Then
             'Valeur_AngleVisArretoir.Value = 215#
-            Set Formule_AngleVisArretoir = GrilleActive.GrilleRelations.CreateFormula("Formule_AngleVisArretoir2", "", Valeur_AngleVisArretoir, "`std\" & Nom_Std & "\AngleVisArretoir` + 180deg")
+            Set Formule_AngleVisArretoir = GrilleActive.GrilleRelations.CreateFormula("Formule_AngleVisArretoir2", "", Valeur_AngleVisArretoir, "`std\" & Nom_STD & "\AngleVisArretoir` + 180deg")
         End If
             
         'Masque le sketcher du trou
@@ -788,7 +788,7 @@ Set Create_Axe = LignePtDir
 
 End Function
 
-Public Function Create_PlanLamage(GrilleActive, Plan_Ref, Nom_Std) As HybridShapePlaneOffset
+Public Function Create_PlanLamage(GrilleActive, Plan_Ref, Nom_STD) As HybridShapePlaneOffset
 'Crée un plan décale dont la valeur est égale au paramètre de profondeur du lamage du trou nez machine
 ' Plan_Ref = TempPlanAxx as HybridShapePlaneNormal
 '
@@ -805,11 +805,11 @@ Dim ValProf_Lamage As Length
 'Set Plan_Ref = GrilleActive.HB(nHBPtConst    ).HybridShapes.Item("TempPlanA39")
 Set Ref_Plan_Ref = GrilleActive.PartGrille.CreateReferenceFromObject(Plan_Ref)
 Set Plan_Decale = GrilleActive.HShapeFactory.AddNewPlaneOffset(Ref_Plan_Ref, 0.5, False)
-    Plan_Decale.Name = "PlanLamage_" & Nom_Std
+    Plan_Decale.Name = "PlanLamage_" & Nom_STD
     
 Set ValProf_Lamage = Plan_Decale.Offset
 'Ajout de la formule qui lie la cote d'offset au parametre du STD
-Set Formule_ProfLamage = GrilleActive.GrilleRelations.CreateFormula("Formule_ProfLamage", "", ValProf_Lamage, "`std\" & Nom_Std & "\ProfLamageTrouNezMachine`")
+Set Formule_ProfLamage = GrilleActive.GrilleRelations.CreateFormula("Formule_ProfLamage", "", ValProf_Lamage, "`std\" & Nom_STD & "\ProfLamageTrouNezMachine`")
 
 
 GrilleActive.Hb(nHBPtConst).AppendHybridShape Plan_Decale

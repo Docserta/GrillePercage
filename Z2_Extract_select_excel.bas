@@ -1,7 +1,7 @@
 Attribute VB_Name = "Z2_Extract_select_excel"
 Option Explicit
 
-Sub catmain()
+Sub CATMain()
 
 'Log de l'utilisation de la macro
 LogUtilMacro nPath, nFicLog, nMacro, "Z2_Extract_select_excel", VMacro
@@ -16,7 +16,7 @@ Dim ShapeA As HybridShape
 Dim ShapeB As HybridShape
 Dim Name_Input As String
 Dim xls As Variant
-Dim cPt As Long
+Dim cpt As Long
 Dim oref As Reference
 Dim TheSPAWorkbench As SPAWorkbench
 Dim Coord(2)
@@ -28,7 +28,7 @@ Dim TheMeasurable 'As Measurable
     Set MySelection = ActiveDoc.Selection
     Set HybridBodies_tmp = part.HybridBodies
     
-    cPt = 1
+    cpt = 1
     
     Set xls = CreateObject("Excel.Application")
         xls.WindowState = 1
@@ -44,22 +44,22 @@ Dim TheMeasurable 'As Measurable
 
     Set TheSPAWorkbench = ActiveDoc.GetWorkbench("SPAWorkbench")
     
-    While (cPt <= MySelection.Count)
+    While (cpt <= MySelection.Count)
     
-        Set ShapeA = MySelection.Item(cPt)
-        xls.worksheets(1).range("A" & cPt + 1) = ShapeA.Value.Name
+        Set ShapeA = MySelection.Item(cpt)
+        xls.worksheets(1).range("A" & cpt + 1) = ShapeA.Value.Name
         Set oref = part.CreateReferenceFromObject(ShapeA.Value)
         Set TheMeasurable = TheSPAWorkbench.GetMeasurable(oref)
         TheMeasurable.GetPoint Coord
     
-        xls.worksheets(1).range("A" & cPt + 1) = ShapeA.Value.Name
-        xls.worksheets(1).range("B" & cPt + 1) = Coord(0)
-        xls.worksheets(1).range("C" & cPt + 1) = Coord(1)
+        xls.worksheets(1).range("A" & cpt + 1) = ShapeA.Value.Name
+        xls.worksheets(1).range("B" & cpt + 1) = Coord(0)
+        xls.worksheets(1).range("C" & cpt + 1) = Coord(1)
         xls.worksheets(1).Columns("C").AutoFit
-        xls.worksheets(1).range("D" & cPt + 1) = Coord(2)
+        xls.worksheets(1).range("D" & cpt + 1) = Coord(2)
         xls.worksheets(1).Columns("D").AutoFit
     
-        cPt = cPt + 1
+        cpt = cpt + 1
     Wend
 
 End Sub

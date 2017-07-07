@@ -5,7 +5,7 @@ Option Explicit
 Public Declare Function GetUserName Lib "advapi32.dll" Alias "GetUserNameA" (ByVal lpBuffer As String, nSize As Long) As Long
 
 'Version de la macro
-Public Const VMacro As String = "Version 10.8 du 21/02/17"
+Public Const VMacro As String = "Version 10.10.5 du 15/05/17"
 Public Const nMacro As String = "Grille de perçage"
 Public Const nPath As String = "\\srvxsiordo\xLogs\01_CatiaMacros"
 Public Const nFicLog As String = "logUtilMacro.txt"
@@ -19,10 +19,12 @@ Public ActiveDoc As Document
     Public Const CheminDestRapport As String = "c:\temp\"
     Public Const NomTemplateExcelMulti As String = "fiche contrôle terminée.xlsm"
     
+    Public Const NomFicInfoBagues As String = "Catalogue_Manual_Drilling_Bush.xlsx"
     Public Const NomFicInfoMachines As String = "InfoMachinesPercage.xlsx"
     Public CheminBibliComposants As String
     Public Const ComplementCheminBibliComposants = "19-BD STANDARDS GRILLES"
     
+    Public Const RepBaguesSprecif As String = "\SPECIFIC FUNCTION\Bush\Manual drilling bush"
     Public Const RepBagues As String = "\BUSH\Standard reference\TBU-xxxxx\ST Parts"
     Public Const RepVis As String = "\OTHER STANDARDS\Locking screw\LOS-xxxxx\ST Parts"
     Public Const RepAgrafes As String = "\OTHER STANDARDS\Fasteners - Agrafes\serie 80\agrafes équipées serie 80"
@@ -109,6 +111,7 @@ Public ActiveDoc As Document
     
 ' Fichier excel des perçages et bagues
     Public CollMachines As New NumMachines
+    Public CollBagues As c_DefBagues
     
     Public ValDscgp As tDSCGP
     'Public GrilleAttributs() As String
@@ -123,11 +126,11 @@ Public ActiveDoc As Document
     Public CheminFicLot As String
 
 ' Variables pour Barre de progression
-    Public nbEtapes As Integer
-    Public noEtape As Integer
+    Public nbEtapes As Long
+    Public noEtape As Long
     Public noItem As Long
     Public nbItems As Long
-    Public strTitre As String
+    Public StrTitre As String
     Public NbPts As Long
     Public NbFeets As Long
     Public NbDatums As Long

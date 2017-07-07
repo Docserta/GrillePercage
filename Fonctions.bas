@@ -41,7 +41,7 @@ End Sub
 
 Function ReturnUserName() As String 'extrait d'un code de Paul, Dave Peterson Exelabo
 'Renvoi le user name de l'utilisateur de la station
-'fonctionne avec la fonction GetUserName dans l'entÃ¨te de dÃ©claration
+'fonctionne avec la fonction GetUserName dans l'entète de déclaration
     Dim Buffer As String * 256
     Dim BuffLen As Long
     BuffLen = 256
@@ -90,9 +90,9 @@ Public Function InsLineSpace(str As String) As String
 End Function
 
 Public Function Split_txt(str As String, pos) As String
-'Coupe une chaine de carratÃ¨res sÃ©parÃ©e par des points virgule pour rÃ©cupÃ©rer la xieme partie
-'str chaine avec PointVirgule de sÃ©paration
-'Pos partie a rÃ©cupÃ©rer
+'Coupe une chaine de carratères séparée par des points virgule pour récupérer la xieme partie
+'str chaine avec PointVirgule de séparation
+'Pos partie a récupérer
 Dim i As Integer
     i = 1
 Dim str_Temp As String
@@ -109,7 +109,7 @@ Dim str_Temp As String
 End Function
 
 Public Function StringtoTab(strg As String) As String()
-'Converti un chaine de carractÃ¨res contenant des "CHR(10)" en tableau
+'Converti un chaine de carractères contenant des "CHR(10)" en tableau
 Dim TempTab() As String
 ReDim TempTab(0)
 TempTab(0) = ""
@@ -130,7 +130,7 @@ nblig = 0
 End Function
 
 Public Function TabtoString(tabl()) As String
-'Converti un tableau en chaine de carractÃ¨re avec des chr(10) apres chaque ligne
+'Converti un tableau en chaine de carractère avec des chr(10) apres chaque ligne
 Dim i As Integer
 Dim TempStr As String
     For i = 0 To UBound(tabl)
@@ -140,15 +140,15 @@ Dim TempStr As String
 End Function
 
 Public Function TestParamExist(mParams As Parameters, NomParam As String) As String
-'test si le paramÃ¨tre passÃ© en argument existe dans le part.
+'test si le paramètre passé en argument existe dans le part.
 'si oui renvoi sa valeur,
-'sinon la crÃ©e et lui affecte la valeur XX
+'sinon la crée et lui affecte la valeur XX
 Dim mParam As StrParam
 On Error Resume Next
     Set mParam = mParams.Item(NomParam)
 
     If (Err.Number <> 0) Then
-        ' Le paramÃ¨tre n'existe pas
+        ' Le paramètre n'existe pas
         Err.Clear
         Set mParam = mParams.CreateString(NomParam, "XX")
     End If
@@ -156,15 +156,15 @@ On Error Resume Next
 End Function
 
 Public Sub CreateParamExistString(CPE_Parametres As Parameters, CPE_NomParam As String, CPE_ValueParam As String)
-'Test si le paramÃ¨tre de type string passÃ© en argument existe dans la collection de paramÃ¨tres
+'Test si le paramètre de type string passé en argument existe dans la collection de paramètres
 'Si oui remplace sa valeur par la valeur CPE_ValueParam
-'Si non CrÃ©e le paramÃ¨tre et lui affecte la valeur CPE_ValueParam
+'Si non Crée le paramètre et lui affecte la valeur CPE_ValueParam
 Dim CPE_Param As StrParam
 On Error Resume Next
     Set CPE_Param = CPE_Parametres.Item(CPE_NomParam)
     
     If Err.Number <> 0 Then
-        ' Le paramÃ¨tre n'existe pas
+        ' Le paramètre n'existe pas
         Err.Clear
         Set CPE_Param = CPE_Parametres.CreateString(CPE_NomParam, CPE_ValueParam)
     Else
@@ -174,16 +174,16 @@ On Error Resume Next
 End Sub
 
 Public Sub CreateParamExistDimension(mParams As Parameters, NomParam As String, vDbl As Double, vType As String)
-'Test si le paramÃ¨tre de type dimension passÃ© en argument existe dans la collection de paramÃ¨tres
+'Test si le paramètre de type dimension passé en argument existe dans la collection de paramètres
 'Si oui remplace sa valeur par la valeur vDbl
-'Si non CrÃ©e le paramÃ¨tre et lui affecte la valeur vDbl
+'Si non Crée le paramètre et lui affecte la valeur vDbl
 'vType = "LENGTH" ou "ANGLE"
 Dim mParam As Dimension
 On Error Resume Next
     Set mParam = mParams.Item(NomParam)
     
     If Err.Number <> 0 Then
-        ' Le paramÃ¨tre n'existe pas
+        ' Le paramètre n'existe pas
         Err.Clear
         Set mParam = mParams.CreateDimension(NomParam, vType, vDbl)
     Else
@@ -206,8 +206,8 @@ Public Function TranspositionTabl(mTable() As String) As String()
 End Function
 
 Public Function AjoutPart(ProdPere As Product, n_Part As String) As Product
-'Ajoute une Part dans le product passÃ© en argument
-'ProdPere = product dans lesquel le nouveau part sera crÃ©Ã©
+'Ajoute une Part dans le product passé en argument
+'ProdPere = product dans lesquel le nouveau part sera créé
 'n_Part = nom de la nouvelle part
 
     Dim ProdPere_prods As Products
@@ -223,7 +223,7 @@ End Function
 Public Sub fixePart(n_Prod As String, n_Part As String)
 'Fixe une part dans un product
 'n_Prod = nom du document du product dans lequel un fixe le part
-'n_Part = nom du document du part fixÃ©
+'n_Part = nom du document du part fixé
 
     Set coll_docs = CATIA.Documents
     Dim ProdDoc As ProductDocument
@@ -288,12 +288,12 @@ Public Sub FixeProdNoeud(n_Pere As String, n_Fils As String)
 End Sub
 
 Public Sub AjoutGrille(ProdPere As Product, n_GrillAss As String, DesGriAss As String, n_GrillNue As String, n_Ass As String, n_Part_U01 As String)
-'Ajoute une grille AsemblÃ©e et ces composants (set gÃ©omÃ©triques et propriÃ¨tÃ¨s)
-'ProdPere = product dans lesquel la nouvelle grille sera crÃ©ee
-'n_GrillAss = Nom de la grille assemblÃ©e
-'desGriAss = designation de la grille assemblÃ¨e
+'Ajoute une grille Asemblée et ces composants (set géométriques et propriètès)
+'ProdPere = product dans lesquel la nouvelle grille sera créee
+'n_GrillAss = Nom de la grille assemblée
+'desGriAss = designation de la grille assemblèe
 'n_GrillNue = Nom de la grille nue
-'n_Ass = Nom de l'assemblage (NÂ° du lot)
+'n_Ass = Nom de l'assemblage (N° du lot)
 'n_Part_U01 =  Nom de la part U01. si n_Part_U01 = "" => pas de part U01
 
     Dim ProdPere_prods As Products
@@ -302,13 +302,13 @@ Public Sub AjoutGrille(ProdPere As Product, n_GrillAss As String, DesGriAss As S
     Set coll_docs = CATIA.Documents
 '    Dim objSelection As Selection
     
-'CrÃ©ation du product Grille AssemblÃ©e
+'Création du product Grille Assemblée
     Dim ProdGrilleAss As Product
     Set ProdGrilleAss = ProdPere_prods.AddNewComponent("Product", n_GrillAss)
     'Ajout des attributs
     Ajout_Proprietes ProdGrilleAss.ReferenceProduct, False, DesGriAss
       
-'CrÃ©ation du Part Grille nue
+'Création du Part Grille nue
     Dim ProdGrilleNue As Product
     Set ProdGrilleNue = AjoutPart(ProdGrilleAss, n_GrillNue)
     Dim GrilleNueDoc As PartDocument
@@ -317,13 +317,13 @@ Public Sub AjoutGrille(ProdPere As Product, n_GrillAss As String, DesGriAss As S
 'Fixe le part Grille nue
     FixePart2 n_GrillAss, ProdGrilleNue.Name
     
-'CrÃ©ation des set gÃ©omÃ©triques dans le part Grille nue
+'Création des set géométriques dans le part Grille nue
     AjoutSet GrilleNueDoc, False
     Ajout_Proprietes ProdGrilleNue, True, DesGriAss
     
     'Ajout de la part U01
     If n_Part_U01 <> "" Then
-        'CrÃ©ation du Part U01
+        'Création du Part U01
         Dim ProdPartU01 As Product
         Set ProdPartU01 = AjoutPart(ProdGrilleAss, n_Part_U01)
         Dim PartU01Doc As PartDocument
@@ -331,7 +331,7 @@ Public Sub AjoutGrille(ProdPere As Product, n_GrillAss As String, DesGriAss As S
     
         'Fixe le part Grille nue
         FixePart2 n_GrillAss, ProdPartU01.Name
-        'Ajout des set gÃ©omÃ©triques de la Part U1
+        'Ajout des set géométriques de la Part U1
         AjoutSet PartU01Doc, True
 
     End If
@@ -341,7 +341,7 @@ Public Sub AjoutGrille(ProdPere As Product, n_GrillAss As String, DesGriAss As S
 End Sub
 
 Public Sub Ajout_Proprietes(mProd, mPart, design As String)
-'Ajout des paramÃ¨tres dans le fichier d'assemblage
+'Ajout des paramètres dans le fichier d'assemblage
 'mProd = Produit
 'mPart = true si c'est une Catpart, False si c'est un Catproduct
 
@@ -361,7 +361,7 @@ Dim ParamAdd As StrParam
         mProd.DescriptionRef = vDescGNue
         Set ParamAdd = mParams.CreateString(nPrmObserv, ValDscgp.Observ)
         Set ParamAdd = mParams.CreateString(nPrmDtempl, ValDscgp.Dtemplate)
-        'ces 2 attributs servent Ã  documenter le Proces Verbal (Macro Z5_xxxxx)
+        'ces 2 attributs servent à documenter le Proces Verbal (Macro Z5_xxxxx)
         Set ParamAdd = mParams.CreateString(nPrmNumout, ValDscgp.Numout)
         Set ParamAdd = mParams.CreateString(nPrmDesign, ValDscgp.design)
         Set ParamAdd = mParams.CreateString(nPrmExempl, ValDscgp.Exemplaire)
@@ -379,9 +379,9 @@ Dim ParamAdd As StrParam
 End Sub
 
 Public Function IsLoadPart(coll_docs, NomPart As String) As Boolean
-'VÃ©rifie si le le nom du part passÃ© en argument est chargÃ©
-'Coll_docs = collection des documenrs chargÃ©s
-'NomPart = nom de la part recherchÃ©e format : "xxxxxxxxxxxxx.CATPart"
+'Vérifie si le le nom du part passé en argument est chargé
+'Coll_docs = collection des documenrs chargés
+'NomPart = nom de la part recherchée format : "xxxxxxxxxxxxx.CATPart"
 Dim ParTemp As PartDocument
     On Error Resume Next
     Set ParTemp = coll_docs.Item(NomPart)
@@ -393,7 +393,7 @@ Dim ParTemp As PartDocument
     End If
 End Function
 Public Function Select_PartGrille(vInt As Integer) As String
-'Demande Ã  l'utilisateur de sÃ©lectionner un product correspondant Ã  la grille nue
+'Demande à l'utilisateur de sélectionner un product correspondant à la grille nue
 'vInt = 1 pour Gauche et 2 pour Droite
 Dim varfilter(0) As Variant
 Dim objSel As Selection
@@ -426,28 +426,28 @@ Dim strMsg As String
     If ((strReturn = "Cancel") Or (strReturn = "Undo")) Then
         Select_PartGrille = ""
     Else
-        'Objet sÃ©lectionnÃ© dans l'arbre
+        'Objet sélectionné dans l'arbre
         Select_PartGrille = objSel.Item2(1).Value.Name
     End If
 'objSel.Clear
 End Function
 
 Public Sub SelectPTA(GrilleActive)
-'Renvois une sÃ©lection des points a traiter
+'Renvois une sélection des points a traiter
 
 Dim tab_selection(0)
     tab_selection(0) = "HybridShape"
 Dim Retour_Selection As String
     Retour_Selection = ""
 Dim MsgSel As String
-    MsgSel = "SÃ©lectionnez les UDF dans la fenÃ¨tre graphique ou dans le set gÃ©omÃ©trique Ref externe isolÃ©es"
+    MsgSel = "Sélectionnez les UDF dans la fenètre graphique ou dans le set géométrique Ref externe isolées"
     
     Retour_Selection = GrilleActive.GrilleSelection.SelectElement3(tab_selection, MsgSel, True, CATMultiSelTriggWhenUserValidatesSelection, False)
 
 End Sub
 
 Public Function Check_partActif() As Boolean
-'VÃ©rifie que le document actif est un Catpart
+'Vérifie que le document actif est un Catpart
 
     Dim ActiveDoc As Document
     On Error Resume Next
@@ -464,7 +464,7 @@ Public Function Check_partActif() As Boolean
 End Function
 Public Function Check_GrilleAss() As Boolean
 
-'VÃ©rifie que le document actif est un product de grille assemblÃ©e
+'Vérifie que le document actif est un product de grille assemblée
 'et qu'il contiens un part grille nue
 
 'Dim instance_catpart_grille_nue As Product
@@ -478,15 +478,15 @@ Dim GrilleAss As ProductDocument
     On Error Resume Next
     Set GrilleAss = CATIA.ActiveDocument
     If Err.Number <> 0 Then
-        MsgBox "Le document de la fenÃªtre courante n'est pas un CATProduct !", vbCritical, "Environnement incorrect"
+        MsgBox "Le document de la fenêtre courante n'est pas un CATProduct !", vbCritical, "Environnement incorrect"
         GoTo Erreur_sortie
 '    Else
 '        Set Product_GrilleAss = GrilleAss.Product
     End If
 
-'' On vÃ©rifie que qu'il y a une piÃ¨ce dans l'assemblage
+'' On vérifie que qu'il y a une pièce dans l'assemblage
 '    If Product_GrilleAss.Products.Count = 0 Then
-'        MsgBox "Le CATProduct est vide !" & vbCrLf & "Veuillez ouvrir un product de grille AssemblÃ©e contenant une grille nue !", vbCritical, "Environnement incorrect"
+'        MsgBox "Le CATProduct est vide !" & vbCrLf & "Veuillez ouvrir un product de grille Assemblée contenant une grille nue !", vbCritical, "Environnement incorrect"
 '        GoTo Erreur_sortie
 '    End If
 '
@@ -507,10 +507,10 @@ End Function
 
 
 Function Check_PtExist(HBody, PtName As String) As Boolean
-'VÃ©rifie si les points existe deja dans le set gÃ©omÃ©trique passÃ© en argument, empeche de recreer des points deja existants,
+'Vérifie si les points existe deja dans le set géométrique passé en argument, empeche de recreer des points deja existants,
 'elle est appele lors de la creation des points A, B
-'hBody set gÃ©ographique dans lequel on recherche le point
-'PtName Nom du point recherchÃ©
+'hBody set géographique dans lequel on recherche le point
+'PtName Nom du point recherché
 
 Dim CPE_hybridShapes As HybridShapes
 Set CPE_hybridShapes = HBody.HybridShapes
@@ -532,9 +532,9 @@ Dim CPE_Present As Boolean
 End Function
 
 Function Create_PtCoord(Xe As Double, Ye As Double, Ze As Double, PtName As String, GrilleActive) As HybridShapePointCoord
-'CrÃ©ation d'un point au coordonnÃ©e Xe, Ye, Ze de nom PtName
+'Création d'un point au coordonnée Xe, Ye, Ze de nom PtName
 'dans le set la part "Points de construction" de la grille
-'Si le point existe, renvoi le point, sinon le crÃ©e
+'Si le point existe, renvoi le point, sinon le crée
 
 Dim hybridShapePointCoord1 As HybridShapePointCoord
 Dim PtExist As Boolean
@@ -542,7 +542,7 @@ Dim PtExist As Boolean
 Dim k As Integer
 Dim ExistPtName As String
 
-'VÃ©rification si le point existe
+'Vérification si le point existe
 Dim CPE_hybridShapes As HybridShapes
 Set CPE_hybridShapes = GrilleActive.Hb(nHBPtConst).HybridShapes
 
@@ -566,8 +566,8 @@ Set CPE_hybridShapes = GrilleActive.Hb(nHBPtConst).HybridShapes
 End Function
 
 Function Create_Line_PtPt(Pt1, Pt2, ByRef GrilleActive, PtName) As Boolean
-'CrÃ©e une ligne entre les pts Pt1 et Pt2
-'Active le set gÃ©omÃ©trique "std" dans le part actif
+'Crée une ligne entre les pts Pt1 et Pt2
+'Active le set géométrique "std" dans le part actif
 Dim mHSLinePtPt As HybridShapeLinePtPt
     GrilleActive.PartGrille.InWorkObject = GrilleActive.Hb(nHBStd)
     Set mHSLinePtPt = GrilleActive.HShapeFactory.AddNewLinePtPtExtended(Pt1, Pt2, 110, 110)
@@ -578,8 +578,8 @@ Dim mHSLinePtPt As HybridShapeLinePtPt
 End Function
 
 Public Function ChangeSingle(str) As Single
-'Converti la valeur passÃ©e en argument en type single
-'Remplace le point par une virgule ou l'inverse (fonction du paramÃ¨tre rÃ©gional Windows)
+'Converti la valeur passée en argument en type single
+'Remplace le point par une virgule ou l'inverse (fonction du paramètre régional Windows)
 On Error Resume Next
 Dim CS_temp As Single
     CS_temp = CSng(str)
@@ -607,7 +607,7 @@ On Error Resume Next
 End Function
 
 Public Function EffaceFicNom(mFolder, FicNom) As Boolean
-'Effacement d'un fichier excel prÃ©-existant
+'Effacement d'un fichier excel pré-existant
 On Error GoTo Err_EffaceFicNom
 Dim oFs, mFold, mFiles, mFile
     Set oFs = CreateObject("Scripting.FileSystemObject")
@@ -628,8 +628,8 @@ Quit_EffaceFicNom:
 End Function
 
 Public Function SignePlusMoins(V1, V2) As Double
-'Renvoi -1 si V1 est infÃ©rieur Ã  V2
-'Renvoi +1 si V1 est suppÃ©rieur ou egal Ã  V2
+'Renvoi -1 si V1 est inférieur à V2
+'Renvoi +1 si V1 est suppérieur ou egal à V2
     If V1 >= V2 Then
         SignePlusMoins = 1
     Else
@@ -645,7 +645,7 @@ Public Function AddLigneReport(str, mTab) As String()
 End Function
 
 Public Function DecoupeSlash(str As String) As String
-'RecupÃ¨re la partie finale d'une string apres le dernier "\"
+'Recupère la partie finale d'une string apres le dernier "\"
 Do While InStr(1, str, "\", vbTextCompare) > 0
     str = Right(str, Len(str) - InStr(1, str, "\", vbTextCompare))
 Loop
@@ -660,7 +660,7 @@ Public Sub BorduresCell(wSheet, cel1, cel2)
 End Sub
 
 Public Sub CouleurCell(wSheet, cel1, cel2, Coul As String)
-'Colorie la plage de cellules cel1:cel2 dans la couleur passÃ©e en argument
+'Colorie la plage de cellules cel1:cel2 dans la couleur passée en argument
 Dim lgCol As Long
     If Coul = "gris" Then
         lgCol = 11842740 'Gris
@@ -678,7 +678,7 @@ Dim lgCol As Long
 End Sub
 
 Public Sub FormText(wSheet, Cell, mtype As String)
-'Change le format du texte de  la cellule passÃ©e en argument
+'Change le format du texte de  la cellule passée en argument
 Dim FT_Color As Long
 Dim FT_Size As Long
 If mtype = "Titre" Then
@@ -709,24 +709,29 @@ End Sub
 
 Public Function CorrigeDFS() As String
 'Corrige une erreur du DFS. a savoir que sur le site de Xsn,
-'La Bibli est nommÃ© : W:\50-PRJ Grilles
-'alors que pour les autres sites, elle est nommÃ© :W:\50 - PRJ Grilles
+'La Bibli est nommé : W:\50-PRJ Grilles
+'alors que pour les autres sites, elle est nommé :W:\50 - PRJ Grilles
 Dim FileSystem As New Navigateur1
 Dim ListRepBibli
 Dim RepBibli
 
-ListRepBibli = FileSystem.ListeRep("W:\")
-For Each RepBibli In ListRepBibli
-    If Left(RepBibli, 2) = "50" Then
-        CorrigeDFS = "W:\" & RepBibli
+    On Error Resume Next
+    ListRepBibli = FileSystem.ListeRep("W:\")
+    If Err.Number <> 0 Then
+        MsgBox "Le chemin de la bibliothèque est introuvable! verifiez votre connexion au lecter W/", vbCritical, "Bibliothèque introuvable"
+    Else
+        For Each RepBibli In ListRepBibli
+            If Left(RepBibli, 2) = "50" Then
+                CorrigeDFS = "W:\" & RepBibli
+            End If
+        Next
     End If
-Next
 
 End Function
 
 Public Sub WriteLog(Contenu, DestPath, NomFicLog)
 'Ecriture du log
-'Ecrit dans un fichier texte le contenu du tableau passÃ© en argument
+'Ecrit dans un fichier texte le contenu du tableau passé en argument
 'Contenu = tableau de string 2 dimensions
 'DestPath = path de destination du fichier log
 'NomFicLog = Nom du fichier de log
@@ -750,8 +755,8 @@ Dim fs, f
 End Sub
 
 Public Function FileExist(StrFile As String) As Boolean
-'Teste si le rÃ©pertoire existe et revois vrai ou faux
-'StrFile = nom du chemin complet jusqu'au rÃ©pertoire a tester ex "c:\temp\test"
+'Teste si le répertoire existe et revois vrai ou faux
+'StrFile = nom du chemin complet jusqu'au répertoire a tester ex "c:\temp\test"
 Dim fs, f
     Set fs = CreateObject("scripting.filesystemobject")
     On Error Resume Next
@@ -766,8 +771,8 @@ End Function
 
 
 Public Function FldExist(Fld As String) As Boolean
-'Teste si le rÃ©pertoire existe et revois vrai ou faux
-'Fld = nom du chemin complet jusqu'au rÃ©pertoire a tester ex "c:\temp\test"
+'Teste si le répertoire existe et revois vrai ou faux
+'Fld = nom du chemin complet jusqu'au répertoire a tester ex "c:\temp\test"
 Dim fs, fd
     Set fs = CreateObject("scripting.filesystemobject")
     On Error Resume Next
@@ -792,9 +797,9 @@ Function GetPath(Titre As String) As String
 End Function
 
 Public Function CreatFld(Fld As String, Path As String) As Boolean
-'CrÃ©e un rÃ©pertoire dans le dossier passÃ© en argument
-'Path = repertoire dans lequel doit Ãªtre crÃ©Ã© le nouveau rÃ©pertoire
-'Fld = Nom du rÃ©pertoire a crÃ©er
+'Crée un répertoire dans le dossier passé en argument
+'Path = repertoire dans lequel doit être créé le nouveau répertoire
+'Fld = Nom du répertoire a créer
 Dim fs, fd
     Set fs = CreateObject("scripting.filesystemobject")
     On Error Resume Next
@@ -808,14 +813,14 @@ Dim fs, fd
 End Function
 
 Public Sub AjoutSet(mDoc As PartDocument, isU1 As Boolean)
-'CrÃ©ation des set gÃ©omÃ©triques dans le part
+'Création des set géométriques dans le part
 'mDoc = part document
-'isU1 = true si c'est une part de controle (U1) seuls certains set sont crÃ©Ã© dans cette parts
+'isU1 = true si c'est une part de controle (U1) seuls certains set sont créé dans cette parts
     Dim mPart As part
     Set mPart = mDoc.part
     Dim mBodies As HybridBodies, mSubBodies As HybridBodies
     Set mBodies = mPart.HybridBodies
-    'Set GÃ©omÃ©trique Niveau 1
+    'Set Géométrique Niveau 1
     Dim mBody As HybridBody
     If (Not isU1) Then
         Set mBody = mBodies.Add()
@@ -842,7 +847,7 @@ Public Sub AjoutSet(mDoc As PartDocument, isU1 As Boolean)
         mBody.Name = nHBPtConst
         Set mBody = mBodies.Add()
         mBody.Name = nHBTrav
-        'Set GÃ©omÃ©trique Niveau 2
+        'Set Géométrique Niveau 2
         Dim mSubBody As HybridBody
         Set mSubBodies = mPart.HybridBodies.Item(nHBTrav)
         Set mSubBody = mSubBodies.Add()
@@ -861,9 +866,9 @@ Public Sub AjoutSet(mDoc As PartDocument, isU1 As Boolean)
 End Sub
 
 Public Sub Ajout1Set(mDoc As PartDocument, NomSet As String)
-'CrÃ©ation d'un set gÃ©omÃ©trique dans le part
+'Création d'un set géométrique dans le part
 'mDoc = part document
-'NomSet = Nom du set a crÃ©er
+'NomSet = Nom du set a créer
     Dim mPart As part
     Set mPart = mDoc.part
     Dim mBodies As HybridBodies
@@ -895,7 +900,7 @@ End Function
 Public Function NumCar(num As Integer) As String
 'Converti un chiffre en lettre
 '1 = A, 2 = B etc
-'Attention la numÃ©rotation de Array commence Ã  0 d'ou le double A dans la liste
+'Attention la numérotation de Array commence à 0 d'ou le double A dans la liste
 Dim ListCar
 If num > 78 Then ' a changer si on ajoute des colonnes a la liste Array
     num = 1
@@ -907,7 +912,7 @@ NumCar = ListCar(num)
 End Function
 
 Public Function MatBody(mPart As part, mBody As Body) As Material
-'Renvoi la matiÃ¨re appliquÃ©e au part body
+'Renvoi la matière appliquée au part body
     
     Dim oManager As MaterialManager
     Dim oAppliedMaterial As Material
@@ -918,7 +923,7 @@ Public Function MatBody(mPart As part, mBody As Body) As Material
 End Function
 
 Public Function Matpart(mPart As part) As Material
-'Renvoi la matiÃ¨re appliquÃ©e au part
+'Renvoi la matière appliquée au part
     
     Dim oManager As MaterialManager
     Dim oAppliedMaterial As Material
@@ -939,7 +944,7 @@ Public Function MassPart(mProd As Product) As Double
 End Function
 
 Public Function DistMat(CoPt1 As c_Coord, CoPt2 As c_Coord) As Double
-'Renvoi la distance entre deux points de coordonÃ©es x, y, z
+'Renvoi la distance entre deux points de coordonées x, y, z
 Dim Dx As Double, DY As Double, Dz As Double
     Dx = (CoPt1.X - CoPt2.X) ^ 2
     DY = (CoPt1.Y - CoPt2.Y) ^ 2
@@ -948,7 +953,7 @@ Dim Dx As Double, DY As Double, Dz As Double
 End Function
 
 Public Function CoordPt(tpart As part, tHSEC As HybridShape) As c_Coord
-'Renvoi la coordonnÃ©es X, Y ou Z mesurÃ©e du point passÃ© en argument
+'Renvoi la coordonnées X, Y ou Z mesurée du point passé en argument
 Dim spa_workbench As SPAWorkbench
 Dim mMes 'as Measurable
 Dim mRef As Reference
@@ -968,7 +973,7 @@ Set tCoordPt = New c_Coord
 End Function
 
 Public Function ReadXlsBagues(ficXls As String) As c_DefBagues
-'Construit la collection des bagues spÃ©cifiques
+'Construit la collection des bagues spécifiques
 Dim oBague As c_DefBague
 Dim oBagues As c_DefBagues
 Dim objexcel
@@ -987,15 +992,13 @@ Dim LigEC As Long
         Set oBague = New c_DefBague
         oBague.Ref = objWorkSheet.cells(LigEC, 1) ' Reference
         oBague.DNom = objWorkSheet.cells(LigEC, 2) ' Diam Nominal
-        oBague.Mat = objWorkSheet.cells(LigEC, 3) ' MatiÃ¨re
-
+        oBague.Mat = objWorkSheet.cells(LigEC, 3) ' Matière
         oBague.D1 = CDbl(objWorkSheet.cells(LigEC, 4)) 'D1
         oBague.D2 = CDbl(objWorkSheet.cells(LigEC, 5)) 'D2
         oBague.D3 = CDbl(objWorkSheet.cells(LigEC, 7)) 'D3
         oBague.L1 = CDbl(objWorkSheet.cells(LigEC, 8)) 'L1
         oBague.L2 = CDbl(objWorkSheet.cells(LigEC, 9)) 'L2
         oBague.NomFic = objWorkSheet.cells(LigEC, 11) 'Nom du Catpart
-
         LigEC = LigEC + 1
         oBagues.Add oBague.Ref, oBague.DNom, oBague.Mat, oBague.D1, oBague.D2, oBague.D3, oBague.L1, oBague.L2, oBague.NomFic
         Set oBague = Nothing
@@ -1003,7 +1006,7 @@ Dim LigEC As Long
 
     Set ReadXlsBagues = oBagues
 
-'libÃ©ration des classes
+'libération des classes
 Set oBague = Nothing
 Set oBagues = Nothing
 Set objexcel = Nothing

@@ -216,50 +216,52 @@ Dim Comments As String, Name_STD As String
 Dim Nom_FauxPtA_Parent As String, No_FauxPtA_Parent As String, Nom_NewPt As String, No_NewPt As String
 Dim Nb_Std As Long
 Dim cpt As Long, i As Integer
-    cpt = 1
-Dim mHSIntersectA As HybridShapeIntersection, mHSIntersectB As HybridShapeIntersection
-Dim mHSIntersectSTD
+Dim HSIntersectA As HybridShapeIntersection, HSIntersectB As HybridShapeIntersection
+Dim HSIntersectSTD
 
+    'initialisation des variables
+    cpt = 1
     mBar.Titre = " Création des droites AB, veuillez patienter."
 
 While (cpt <= GrilleActive.GrilleSelection.Count)
     Nb_Std = GrilleActive.Hb(nHBStd).HybridShapes.Count
-    If CP_TypeSTD = "RefSTD" Then
-        'Recupération du Numero du point d'origine de la ligne std pour nommer les points A et B
-        For i = 1 To Nb_Std
-            Nom_FauxPtA_Parent = GrilleActive.Hb(nHBStd).HybridShapes.Item(i).PtOrigine.DisplayName
-            Nom_NewPt = Right(Nom_FauxPtA_Parent, Len(GrilleActive.GrilleSelection.Item(cpt).Value.Name))
-            'Recherche parmis les lignes STD celle dont le point d'origine porte le même nom que l'UFD sélectionné
-            If GrilleActive.GrilleSelection.Item(cpt).Value.Name = Nom_NewPt Then
-                Set mHSIntersectSTD = GrilleActive.Hb(nHBStd).HybridShapes.Item(i)
-                'Récupération du N° du point parent (si fauxA49-xxx on récupère 49)
-                No_NewPt = Left(Nom_FauxPtA_Parent, InStr(Nom_FauxPtA_Parent, "-") - 1)
-                No_NewPt = Right(No_NewPt, Len(No_NewPt) - 6) '"faux A " = 6 caractères
-                Exit For
+    Select Case CP_TypeSTD
+        Case "RefSTD" 'Recupération du Numero du point d'origine de la ligne std pour nommer les points A et B
+            For i = 1 To Nb_Std
+                Nom_FauxPtA_Parent = GrilleActive.Hb(nHBStd).HybridShapes.Item(i).PtOrigine.DisplayName
+                Nom_NewPt = Right(Nom_FauxPtA_Parent, Len(GrilleActive.GrilleSelection.Item(cpt).Value.Name))
+                'Recherche parmis les lignes STD celle dont le point d'origine porte le même nom que l'UFD sélectionné
+                If GrilleActive.GrilleSelection.Item(cpt).Value.Name = Nom_NewPt Then
+                    Set HSIntersectSTD = GrilleActive.Hb(nHBStd).HybridShapes.Item(i)
+                    'Récupération du N° du point parent (si fauxA49-xxx on récupère 49)
+                    No_NewPt = Left(Nom_FauxPtA_Parent, InStr(Nom_FauxPtA_Parent, "-") - 1)
+                    No_NewPt = Right(No_NewPt, Len(No_NewPt) - 6) '"faux A " = 6 caractères
+                    Exit For
+                End If
+            Next
+            Comments = GrilleActive.GrilleSelection.Item(cpt).Value.GetParameter("Comments").Value
+            Name_STD = GrilleActive.GrilleSelection.Item(cpt).Value.Name
+            If IsEmpty(HSIntersectSTD) Then
+                MsgBox "La ligne STD n'a pas été trouvée. Impossible de créer les points A et point B", vbInformation, "Elément manquant"
+                End
             End If
-        Next
-        Comments = GrilleActive.GrilleSelection.Item(cpt).Value.GetParameter("Comments").Value
-        Name_STD = GrilleActive.GrilleSelection.Item(cpt).Value.Name
-        If IsEmpty(mHSIntersectSTD) Then
-            MsgBox "La ligne STD n'a pas été trouvée. Impossible de créer les points A et point B", vbInformation, "Elément manquant"
-            End
-        End If
-    ElseIf CP_TypeSTD = "RefPrpSurf0" Then
-        'Recupération du Numero du point de reference de la ligne std pour nommer les points A et B
-        For i = 1 To Nb_Std
-            Nom_FauxPtA_Parent = GrilleActive.Hb(nHBStd).HybridShapes.Item(i).Point.DisplayName
-            If GrilleActive.GrilleSelection.Item(cpt).Value.Name = Nom_FauxPtA_Parent Then
-                'Récupération du N° du point parent
-                Set mHSIntersectSTD = GrilleActive.Hb(nHBStd).HybridShapes.Item(i)
-                No_NewPt = i
-                Exit For
+        Case "RefPrpSurf0" 'Recupération du Numero du point de reference de la ligne std pour nommer les points A et B
+            For i = 1 To Nb_Std
+                Nom_FauxPtA_Parent = GrilleActive.Hb(nHBStd).HybridShapes.Item(i).Point.DisplayName
+                If GrilleActive.GrilleSelection.Item(cpt).Value.Name = Nom_FauxPtA_Parent Then
+                    'Récupération du N° du point parent
+                    Set HSIntersectSTD = GrilleActive.Hb(nHBStd).HybridShapes.Item(i)
+                    No_NewPt = i
+                    Exit For
+                End If
+            Next i
+            If IsEmpty(HSIntersectSTD) Then
+                MsgBox "La ligne STD n'a pas été trouvée. Impossible de créer les points A et point B", vbInformation, "Elément manquant"
+                End
             End If
-        Next i
-        If IsEmpty(mHSIntersectSTD) Then
-            MsgBox "La ligne STD n'a pas été trouvée. Impossible de créer les points A et point B", vbInformation, "Elément manquant"
-            End
-        End If
-    End If
+        Case "RefLegacy" 'Numérotation des points a et B dans l'ordre des STD
+            No_NewPt = i
+    End Select
     
 'Maj Barre de progression
     mBar.Progression = 50 + (50 / GrilleActive.GrilleSelection.Count) * cpt
@@ -267,40 +269,40 @@ While (cpt <= GrilleActive.GrilleSelection.Count)
 'Point A
     If (Check_PtExist(GrilleActive.Hb(nHBPtA), Name_STD) <> 1) Then
         'Création de l'intersection entre la ligne STD et la surface à 0
-        Set mHSIntersectA = GrilleActive.HShapeFactory.AddNewIntersection(mHSIntersectSTD, GrilleActive.HS(nSurf0, nHBS0))
-        mHSIntersectA.PointType = 0
+        Set HSIntersectA = GrilleActive.HShapeFactory.AddNewIntersection(HSIntersectSTD, GrilleActive.HS(nSurf0, nHBS0))
+        HSIntersectA.PointType = 0
         'Renommage du point
         Select Case CP_Num
         Case 1 ' A1-Nom du STD
-            mHSIntersectA.Name = "A" & No_NewPt & "-" & Name_STD
+            HSIntersectA.Name = "A" & No_NewPt & "-" & Name_STD
             mBar.Etape = "A" & No_NewPt & "-" & Name_STD
         Case 2 ' A1-comments du STD
-            mHSIntersectA.Name = "A" & No_NewPt & "-" & Comments
+            HSIntersectA.Name = "A" & No_NewPt & "-" & Comments
             mBar.Etape = "A" & No_NewPt & "-" & Comments
         Case 3 ' A1
-            mHSIntersectA.Name = "A" & No_NewPt
+            HSIntersectA.Name = "A" & No_NewPt
             mBar.Etape = "A" & No_NewPt
         End Select
-        GrilleActive.Hb(nHBPtA).AppendHybridShape mHSIntersectA
+        GrilleActive.Hb(nHBPtA).AppendHybridShape HSIntersectA
     End If
 'Point B
     If (Check_PtExist(GrilleActive.Hb(nHBPtB), Name_STD) <> 1) Then
         'Création de l'intersection entre la ligne STD et la surface à 100
-        Set mHSIntersectB = GrilleActive.HShapeFactory.AddNewIntersection(mHSIntersectSTD, GrilleActive.HS(nSurf100, nHBS100))
-        mHSIntersectB.PointType = 0
+        Set HSIntersectB = GrilleActive.HShapeFactory.AddNewIntersection(HSIntersectSTD, GrilleActive.HS(nSurf100, nHBS100))
+        HSIntersectB.PointType = 0
         'Renommage du point
         Select Case CP_Num
         Case 1 ' B1-Nom du STD
-            mHSIntersectB.Name = "B" & No_NewPt & "-" & Name_STD
+            HSIntersectB.Name = "B" & No_NewPt & "-" & Name_STD
             mBar.Etape = "B" & No_NewPt & "-" & Name_STD
         Case 2 ' B1-comments du STD
-            mHSIntersectB.Name = "B" & No_NewPt & "-" & Comments
+            HSIntersectB.Name = "B" & No_NewPt & "-" & Comments
             mBar.Etape = "B" & No_NewPt & "-" & Comments
         Case 3 ' B1
-            mHSIntersectB.Name = "B" & No_NewPt
+            HSIntersectB.Name = "B" & No_NewPt
             mBar.Etape = "B" & No_NewPt
         End Select
-        GrilleActive.Hb(nHBPtB).AppendHybridShape mHSIntersectB
+        GrilleActive.Hb(nHBPtB).AppendHybridShape HSIntersectB
     End If
     
     cpt = cpt + 1
@@ -313,26 +315,28 @@ End Function
 
 Public Function CreateStdLegacy(ByRef GrilleActive, mBar) As Integer
 'Création des droites STD a partir des lignes (legacy) collée dans le set références externes isolées
-'la macro crée un point aux extrémités de la droite puis une droite entre ces point étendue de 100 mm de chaque cotés.
+'la macro crée un point a l'extrémités de la droite
+'puis une droite de ce point avec comme direction la droite sélectionnée
+'puis étendue la droite de 100 mm de chaque cotés.
 
 'Selection des points
 Dim varfilter(0) As Variant
 Dim objSel As Selection
 Dim objSelLB As Object
 Dim strReturn As String
-    strReturn = "Normal"
-Dim msg, Msg2, strMsgPt1, strMsgLine  As String
-Dim CSL_HBShapeLinePtLineDir As HybridShapeLinePtDir
-Dim CSL_HSDirection As HybridShapeDirection
-Dim CSL_HShapeFactory As HybridShapeFactory
-Set CSL_HShapeFactory = GrilleActive.HShapeFactory
+Dim msg As String, Msg2 As String, strMsgPt1 As String, strMsgLine  As String
+Dim HSLinePtLineDir As HybridShapeLinePtDir
+Dim HSDirection As HybridShapeDirection
+Dim HSFactory As HybridShapeFactory
 Dim PtCoord1, LineDir As Reference
 Dim LignDirName As String
+Dim NoPt As Long
 
-
+    'Initialisation des variables
+    Set HSFactory = GrilleActive.HShapeFactory
     Set objSel = GrilleActive.partDocGrille.Selection
     Set objSelLB = objSel
-
+    strReturn = "Normal"
     msg = "Pour chaque référence externe isolée, sélectionnez:" & Chr(13) & "1) le point de l'extrémité de la ligne dans le part." & Chr(13) & "2) puis la ligne." & Chr(13) & "Appuyez sur 'Echap' pour arréter la sélection."
     Msg2 = "Sélection des Legacy"
     strMsgPt1 = "Sélectionnez le point de l'extrémité de la ligne dans le part"
@@ -341,24 +345,27 @@ Dim LignDirName As String
     MsgBox msg, vbInformation, Msg2
     
     Do While strReturn = "Normal"
+        NoPt = NoPt + 1
+        'Selection du point
         varfilter(0) = "Vertex"
         objSel.Clear
         strReturn = objSelLB.SelectElement2(varfilter, strMsgPt1, True)
         If (strReturn = "Cancel") Then Exit Do
         Set PtCoord1 = objSel.Item(1).Value
         
+        'Selection de la ligne
         objSel.Clear
         varfilter(0) = "Line"
         strReturn = objSelLB.SelectElement2(varfilter, strMsgLine, True)
         If (strReturn = "Cancel") Then Exit Do
         Set LineDir = objSel.Item(1).Value
         LignDirName = objSel.Item(1).Value.Name
-        Set CSL_HSDirection = CSL_HShapeFactory.AddNewDirection(LineDir)
+        Set HSDirection = HSFactory.AddNewDirection(LineDir)
                 
-        Set CSL_HBShapeLinePtLineDir = CSL_HShapeFactory.AddNewLinePtDir(PtCoord1, CSL_HSDirection, -50#, 200#, True)
-        GrilleActive.Hb(nHBStd).AppendHybridShape CSL_HBShapeLinePtLineDir
-        CSL_HBShapeLinePtLineDir.Name = LignDirName
-    
+        Set HSLinePtLineDir = HSFactory.AddNewLinePtDir(PtCoord1, HSDirection, -50#, 200#, True)
+        GrilleActive.Hb(nHBStd).AppendHybridShape HSLinePtLineDir
+        'HSLinePtLineDir.Name = LignDirName
+        HSLinePtLineDir.Name = "Line." & NoPt
     Loop
     
     GrilleActive.PartGrille.Update
@@ -447,15 +454,15 @@ Private Function CreateStdPerpSurf0(ByRef GrilleActive, mBar) As Boolean
 'Création des droites STD a partir des points
 'la macro crée une droite perpendiculaire à la surface 0 passant par le Point
 
-Dim mHSfact As HybridShapeFactory
+Dim HSfact As HybridShapeFactory
 Dim HFSurf0 As HybridShape
 Dim mPt As HybridShape
 Dim NoSTD As Long
-Dim mHSNormale As HybridShapeLineNormal
+Dim HSNormale As HybridShapeLineNormal
 Dim cpt As Long
     cpt = 1
 
-    Set mHSfact = GrilleActive.PartGrille.HybridShapeFactory
+    Set HSfact = GrilleActive.PartGrille.HybridShapeFactory
     Set HFSurf0 = GrilleActive.HS(nSurf0, nHBS0)
     GrilleActive.PartGrille.InWorkObject = GrilleActive.Hb(nHBStd)
     'Récupère le nombre de lignes STD pour poursuivre la numérotation
@@ -465,11 +472,11 @@ Dim cpt As Long
         NoSTD = NoSTD + 1
         Set mPt = GrilleActive.GrilleSelection.Item(cpt).Value
     
-        Set mHSNormale = mHSfact.AddNewLineNormal(HFSurf0, mPt, -210#, 110#, False)
-        mHSNormale.SetLengthType (0)
-        mHSNormale.Name = "Line." & NoSTD
-        GrilleActive.Hb(nHBStd).AppendHybridShape mHSNormale
-        GrilleActive.PartGrille.InWorkObject = mHSNormale
+        Set HSNormale = HSfact.AddNewLineNormal(HFSurf0, mPt, -210#, 110#, False)
+        HSNormale.SetLengthType (0)
+        HSNormale.Name = "Line." & NoSTD
+        GrilleActive.Hb(nHBStd).AppendHybridShape HSNormale
+        GrilleActive.PartGrille.InWorkObject = HSNormale
         cpt = cpt + 1
         
     Wend

@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} Frm_CreationPtA 
    Caption         =   "Création des Ligne PtA et PtB"
-   ClientHeight    =   3240
+   ClientHeight    =   3780
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   8970
@@ -13,10 +13,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
 
 Private Sub BtnAnnul_Click()
 Me.Hide
@@ -46,23 +42,45 @@ End Sub
 
 Private Sub Rbt_RefLEgacy_Click()
 If Me.Rbt_RefLEgacy Then
-    Me.Frame_NomPt.enabled = False
-    Me.RbtNumCommentStd.enabled = False
-    Me.RbtNumNomStd.enabled = False
-    Me.Frame_SelPts.enabled = False
-    Me.Rbt_SelPts.enabled = False
-    Me.Rbt_SelSetRef.enabled = False
+    Me.Frame_NomPt.Enabled = False
+    Me.RbtNumCommentStd.Enabled = False
+    Me.RbtNumNomStd.Enabled = False
+    Me.RbtNumOrdre.Enabled = True
+    Me.RbtNumOrdre.Value = True
+    
+    Me.Frame_SelPts.Enabled = False
+    Me.Rbt_SelPts.Enabled = False
+    Me.Rbt_SelSetRef.Enabled = False
+End If
+End Sub
+
+Private Sub Rbt_RefPerpSurf0_Click()
+If Me.Rbt_RefPerpSurf0 Then
+    Me.Frame_NomPt.Enabled = False
+    Me.RbtNumCommentStd.Enabled = False
+    Me.RbtNumNomStd.Enabled = False
+    Me.RbtNumOrdre.Enabled = True
+    Me.RbtNumOrdre.Value = True
+    
+    Me.Frame_SelPts.Enabled = True
+    Me.Rbt_SelPts.Enabled = True
+    Me.Rbt_SelSetRef.Enabled = True
+    
 End If
 End Sub
 
 Private Sub Rbt_RefSTD_Click()
 If Me.Rbt_RefSTD Then
-    Me.Frame_NomPt.enabled = True
-    Me.RbtNumCommentStd.enabled = True
-    Me.RbtNumNomStd.enabled = True
-    Me.Frame_SelPts.enabled = True
-    Me.Rbt_SelPts.enabled = True
-    Me.Rbt_SelSetRef.enabled = True
+    Me.Frame_NomPt.Enabled = True
+    Me.RbtNumCommentStd.Enabled = True
+    Me.RbtNumNomStd.Enabled = True
+    Me.Frame_SelPts.Enabled = True
+    Me.Rbt_SelPts.Enabled = True
+    Me.Rbt_SelSetRef.Enabled = True
+    
+    Me.Frame_SelPts.Enabled = True
+    Me.Rbt_SelPts.Enabled = True
+    Me.Rbt_SelSetRef.Enabled = True
 
 End If
 

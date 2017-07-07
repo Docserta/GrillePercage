@@ -11,7 +11,7 @@ Option Explicit
 '* Modification :
 '*
 '**********************************************************************
-Sub catmain()
+Sub CATMain()
 
 'Log de l'utilisation de la macro
 LogUtilMacro nPath, nFicLog, nMacro, "C2_Rename_Set", VMacro

@@ -1,6 +1,6 @@
 Attribute VB_Name = "H_Gravure"
 Option Explicit
-Sub catmain()
+Sub CATMain()
 
 '*********************************************************************
 '* Macro : H_Gravure

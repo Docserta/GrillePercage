@@ -133,11 +133,11 @@ End Sub
 
 Private Sub ChB_U01_Change()
     If Me.ChB_U01 Then
-        Me.Lb_U01.enabled = True
-        Me.TBX_NomU01.enabled = True
+        Me.Lb_U01.Enabled = True
+        Me.TBX_NomU01.Enabled = True
     Else
-        Me.Lb_U01.enabled = False
-        Me.TBX_NomU01.enabled = False
+        Me.Lb_U01.Enabled = False
+        Me.TBX_NomU01.Enabled = False
         Me.TBX_NomU01 = ""
     End If
 End Sub
@@ -157,8 +157,8 @@ Private Sub UserForm_Initialize()
 'Active le bouton "DSCGP" de type 2
 Me.Rbt_Dscgp2 = True
 Me.ChB_U01 = False
-Me.Lb_U01.enabled = False
-Me.TBX_NomU01.enabled = False
+Me.Lb_U01.Enabled = False
+Me.TBX_NomU01.Enabled = False
 
     Me.img_check.Visible = False
     Me.img_uncheck.Visible = True

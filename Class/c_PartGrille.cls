@@ -58,7 +58,7 @@ Private PG_Relations As Relations
 ' Initialisation de l'objet
 '===========================
 '
-Private Sub Class_Initialize()
+Private Sub Class_initialize()
 '
     On Error Resume Next
 '
@@ -127,7 +127,8 @@ End Property
 
 Property Get Hbodies() As HybridBodies
 'renvoi la collection des HybridBodies de premier niveau
-    Set Hbodies = PG_Part.HybridBodies
+    Set Hbodies = PG_Hbodies
+    'Set Hbodies = PG_Part.HybridBodies
 End Property
 
 Property Get Product() As Product

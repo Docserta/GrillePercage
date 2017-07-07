@@ -34,7 +34,7 @@ Private VerDscgp As Integer
 ' Initialisation de l'objet
 '===========================
 '
-Private Sub Class_Initialize()
+Private Sub Class_initialize()
 
 'Initialise la liste des noms de cellule du DSCGP
 'Les cellules sont nommées dans le DSCGP pour éviter la sensibilité à la mise en forme du DSCGP

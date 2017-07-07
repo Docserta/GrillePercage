@@ -13,7 +13,7 @@ Option Explicit
 '* Modification : 15/04/14
 '*
 '**********************************************************************
-Sub catmain()
+Sub CATMain()
 
 'Log de l'utilisation de la macro
 LogUtilMacro nPath, nFicLog, nMacro, "A1_AjoutGrille", VMacro

@@ -36,7 +36,7 @@ Private j As Long
 ' Initialisation de l'objet
 '===========================
 '
-Private Sub Class_Initialize()
+Private Sub Class_initialize()
 'Initialisation des sous classes
 Set DSCGP_EC = New c_DSCGP
 Set Lot_EC = New GrilleLot
@@ -1480,19 +1480,19 @@ Private Sub LstMesures(tpart As part, cFasteners As c_Fasteners)
     
 End Sub
 
-Private Function SearcFastCoord(cPt As Coord, str As String) As c_mesure
+Private Function SearcFastCoord(cpt As Coord, str As String) As c_mesure
 'Recherche un fastener dont les coordonnées correspondent a cpt
 Dim i As Long
 Set SearcFastCoord = New c_mesure
 For i = 1 To col_Mes.Count
-    If Round(Abs(col_Mes.Item(i).Xe - cPt.X), 3) < 0.2 Then
-        If Round(Abs(col_Mes.Item(i).Ye - cPt.Y), 3) < 0.2 Then
-            If Round(Abs(col_Mes.Item(i).Ze - cPt.Z), 3) < 0.2 Then
+    If Round(Abs(col_Mes.Item(i).Xe - cpt.X), 3) < 0.2 Then
+        If Round(Abs(col_Mes.Item(i).Ye - cpt.Y), 3) < 0.2 Then
+            If Round(Abs(col_Mes.Item(i).Ze - cpt.Z), 3) < 0.2 Then
                 Set SearcFastCoord = col_Mes.Item(i)
                 SearcFastCoord.NomPtA = str
-                SearcFastCoord.PtAX = cPt.X
-                SearcFastCoord.PtAY = cPt.Y
-                SearcFastCoord.PtAZ = cPt.Z
+                SearcFastCoord.PtAX = cpt.X
+                SearcFastCoord.PtAY = cpt.Y
+                SearcFastCoord.PtAZ = cpt.Z
                 Exit For
             End If
         End If

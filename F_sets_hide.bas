@@ -21,7 +21,7 @@ Option Explicit
 '*
 '**********************************************************************
 
-Sub catmain()
+Sub CATMain()
 
 'Log de l'utilisation de la macro
 LogUtilMacro nPath, nFicLog, nMacro, "F_sets_hide", VMacro
@@ -49,9 +49,9 @@ Dim IndSelection As Long 'indice qui permet de parcourir la listbox de Frm_Donne
     
     'Test si un Catpart est Actif
     If Check_partActif Then
-        Frm_ListeFichiers.CB_Catpartactif.enabled = True
+        Frm_ListeFichiers.CB_Catpartactif.Enabled = True
     Else
-        Frm_ListeFichiers.CB_Catpartactif.enabled = False
+        Frm_ListeFichiers.CB_Catpartactif.Enabled = False
     End If
     
     Frm_ListeFichiers.Show

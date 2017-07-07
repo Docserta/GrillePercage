@@ -18,7 +18,7 @@ Option Explicit
 '**********************************************************************
 
 
-Sub catmain()
+Sub CATMain()
 On Error GoTo Err_CreationLot
 
 'Log de l'utilisation de la macro
