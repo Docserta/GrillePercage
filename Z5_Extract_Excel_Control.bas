@@ -17,6 +17,8 @@ Sub CATMain()
 ' *                              demande Ludo (Localisation * 2)
 ' * modification le 22/06/16   - Ajout de la sélection du DSCGP pour récupérer les infos "Designation" ... dans le fichier de rapport
 ' *                              Supprimer l'obligation d'avoir physiquement une grille sym pour générer le rapport Sym
+' * modification le 04/07/2017 - Modification de la tolerance inf des Angles cylindrique
+' *                              TolPtAInf = 0 ald -10
 ' *****************************************************************
 
 'Log de l'utilisation de la macro
@@ -1326,7 +1328,7 @@ Dim TolDiaSup As String, TolDiaInf As String
     strPtA = "A" & iLigne
     strPtB = "C" & iLigne
     TolPtASup = 10
-    TolPtAInf = -10
+    TolPtAInf = 0
     wSheet.range(strPtA, strPtB).MergeCells = True
     wSheet.range("A" & iLigne) = MG_msg(41)
     wSheet.range("A" & iLigne).cells.HorizontalAlignment = xLDroite
