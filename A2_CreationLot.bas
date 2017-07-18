@@ -14,6 +14,8 @@ Option Explicit
 '* Version : 9
 '* Création :  CFR
 '* Modification : 26/02/16
+'* Modification du 17/07/17
+'*              Ajout du cas N° 2 dans le calcule des numéro grilles droites et gauches en focntio du coté de conception
 '*
 '**********************************************************************
 
@@ -162,6 +164,8 @@ RepEnvAvion = Frm_ListeFichiers.TBX_EnvAvion
                     nGriAss2 = ""
                     nGriNue2 = ""
                     DesignGri2 = ""
+                ElseIf DSCGP_EC.NumGrille <> "" And DSCGP_EC.NumGrilleSym <> "" Then
+                    cas = 2  'Cas =2 => Grille gauche + sym droite
                 End If
             Case "DROIT"
                 If DSCGP_EC.NumGrille = "" Then
