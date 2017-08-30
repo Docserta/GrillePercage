@@ -97,7 +97,7 @@ LogUtilMacro nPath, nFicLog, nMacro, "J_ImportBagues", VMacro
                 j = j + 1
             ElseIf InStr(1, Std_ParamEC.Name, "NumBague", vbTextCompare) > 0 Then
                 ReDim Preserve TabCompImport(3, j)
-                TabCompImport(0, j) = "BagueSF"
+                TabCompImport(0, j) = "Bague"
                 TabCompImport(1, j) = HBShape_Std_EC.Name
                 TabCompImport(2, j) = Std_ParamEC.Value & ".CATPart"
                 TabCompImport(3, j) = GrilleAssActive.Numero & "/" & GrilleAssActive.Produits.Item(1).Name & "/!" & "RepAss_BagueA" & Right(HBShape_Std_EC.Name, Len(HBShape_Std_EC.Name) - InStr(1, HBShape_Std_EC.Name, ".", vbTextCompare))
@@ -268,13 +268,18 @@ Dim ContrainteAssComposant As Constraint
 
 ' Calcul des références des deux composants
     Set RefSource = GrilleAssActive.Produit.CreateReferenceFromName(NomRefSource)
+    On Error Resume Next
     Set RefCible = GrilleAssActive.Produit.CreateReferenceFromName(NomRefCible)
-
-' Création de la contrainte de coincidence
-    Set ContrainteAssComposant = GrilleAssActive.Contraintes.AddBiEltCst(catCstTypeOn, RefSource, RefCible)
-    ContrainteAssComposant.Name = "Coincidence-" & NomInstanceComp & "_" & IC_Composant(1, IndexTab)
-
-' Mise àjour de l'assemblage
-    GrilleAssActive.Produit.Update
-
+    If Err.Number <> 0 Then 'Si on ne trouve pas le triedre cible
+        Err.Clear
+        On Error GoTo 0
+    Else
+        ' Création de la contrainte de coincidence
+            Set ContrainteAssComposant = GrilleAssActive.Contraintes.AddBiEltCst(catCstTypeOn, RefSource, RefCible)
+            ContrainteAssComposant.Name = "Coincidence-" & NomInstanceComp & "_" & IC_Composant(1, IndexTab)
+        
+        ' Mise àjour de l'assemblage
+            GrilleAssActive.Produit.Update
+    End If
+    
 End Sub

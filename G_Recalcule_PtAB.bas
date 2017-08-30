@@ -33,8 +33,6 @@ Dim HS_FauxPts As HybridShapes
 Dim NoPtTraite As Long
 Dim NomPtTraite As String
 Dim cpt_hs As Long, cpt_RefExt As Long, cpt_HSMax As Long, i As Long
-    cpt_hs = 1
-    cpt_RefExt = 0
 Dim Mon_HShapePointCoord As HybridShapePointCoord
 Dim Ligne_Repport As String
 Dim mBar As c_ProgressBar
@@ -45,7 +43,9 @@ Dim GrilleActive As c_PartGrille
 Dim tFast As c_Fastener
 Dim TestHBody As HybridBody
 
-Set tFast = New c_Fastener
+    Set tFast = New c_Fastener
+    cpt_hs = 1 'Compteur de faux point A et B
+    cpt_RefExt = 1 'Compteur de Fasteners
 
 '---------------------------
 ' Checker l'environnement
@@ -81,7 +81,7 @@ Set tFast = New c_Fastener
 '----------------------------------
     Set HS_FauxPts = GrilleActive.Hb(nHBPtConst).HybridShapes
     For i = 1 To HS_FauxPts.Count
-        If Left(HS_FauxPts.Item(i).Name, 4) = "faux" Then
+        If LCase(Left(HS_FauxPts.Item(i).Name, 4)) = "faux" Then
             cpt_HSMax = cpt_HSMax + 1
         End If
     Next
@@ -109,7 +109,7 @@ Set tFast = New c_Fastener
 ' 7eme, Xdir
 ' 8eme, Ydir
 ' 9eme, Zdir
-        Set tFast = tLisfast.Item(cpt_hs)
+        Set tFast = tLisfast.Item(cpt_RefExt)
         
         Set Mon_HShapePointCoord = HS_FauxPts.Item(cpt_hs)
         
@@ -127,21 +127,21 @@ Set tFast = New c_Fastener
                 Mon_HShapePointCoord.X.Value = CDbl(tFast.Xe)
                 Mon_HShapePointCoord.Y.Value = CDbl(tFast.Ye)
                 Mon_HShapePointCoord.Z.Value = CDbl(tFast.Ze)
-                Mon_HShapePointCoord.Name = "faux A" & cpt_RefExt + 1 & "-" & tFast.nom
+                Mon_HShapePointCoord.Name = "faux A" & cpt_RefExt & "-" & tFast.nom
                    
             ElseIf NomPtTraite = "B" Then
                 Mon_HShapePointCoord.X.Value = CDbl(tFast.Xe) + 100 * CDbl(tFast.Xdir)
                 Mon_HShapePointCoord.Y.Value = CDbl(tFast.Ye) + 100 * CDbl(tFast.Ydir)
                 Mon_HShapePointCoord.Z.Value = CDbl(tFast.Ze) + 100 * CDbl(tFast.Zdir)
-                Mon_HShapePointCoord.Name = "faux B" & cpt_RefExt + 1 & "-" & tFast.nom
+                Mon_HShapePointCoord.Name = "faux B" & cpt_RefExt & "-" & tFast.nom
 
-                cpt_RefExt = cpt_RefExt + 1 'On passe à la ligne suivante dans le tableau
+                cpt_RefExt = cpt_RefExt + 1 'On passe au fastener suivant
             End If
             GrilleActive.PartGrille.UpdateObject Mon_HShapePointCoord
         Else
             GrilleActive.GrilleSelection.Add Mon_HShapePointCoord
         End If
-        cpt_hs = cpt_hs + 1
+        cpt_hs = cpt_hs + 1 'Faux point suivant
     Wend
      
 ' On supprime les points en trop
